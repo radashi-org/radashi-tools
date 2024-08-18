@@ -1,0 +1,112 @@
+{
+  "name": "radashi-vscode",
+  "displayName": "Radashi",
+  "description": "Commands for manaing your own Radashi",
+  "version": "0.1.0",
+  "publisher": "aleclarson",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": ["Other"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/radashi-org/radashi-vscode"
+  },
+  "type": "module",
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "radashi.createFunction",
+        "title": "🔧 Create Function",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.publishMyRadashiToNPM",
+        "title": "🔧 Publish My Radashi To NPM",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.createPullRequest",
+        "title": "🔧 Create PR for Current Branch",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.moveFunction",
+        "title": "🔧 Move Function",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.overrideFunction",
+        "title": "🔧 Override Function",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.importFunction",
+        "title": "🔧 Import Function from PR",
+        "category": "Radashi",
+        "enablement": "radashi.hasRadashiWorkspace"
+      },
+      {
+        "command": "radashi.searchFunctions",
+        "title": "✳️ Search Functions",
+        "category": "Radashi"
+      },
+      {
+        "command": "radashi.proposeNewFunction",
+        "title": "✳️ Propose New Function",
+        "category": "Radashi"
+      },
+      {
+        "command": "radashi.applyToCoreTeam",
+        "title": "🏆 Apply To Core Team",
+        "category": "Radashi"
+      },
+      {
+        "command": "radashi.exploreCoreFunctions",
+        "title": "✳️ Explore Core Functions",
+        "category": "Radashi"
+      },
+      {
+        "command": "radashi.exploreCommunityFunctions",
+        "title": "✳️ Explore Community Functions",
+        "category": "Radashi"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "radashi.searchFunctions",
+        "key": "ctrl+p",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsup --clean",
+    "dev": "tsup --clean --watch --sourcemap",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.75.0",
+    "@vscode/vsce": "^2.31.1",
+    "algoliasearch": "^4.24.0",
+    "esbuild": "^0.23.0",
+    "p-memoize": "^7.1.1",
+    "radashi": "12.2.0-beta.af825f4",
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.4",
+    "yaml": "^2.5.0"
+  },
+  "dependencies": {
+    "execa": "^9.3.0",
+    "fast-glob": "^3.3.2",
+    "radashi-helper": "workspace:^"
+  }
+}

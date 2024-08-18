@@ -1,0 +1,720 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`override a function > git diff (last-commit) 1`] = `
+"diff --git a/mod.ts b/mod.ts
+index 1807e49..01ea006 100644
+--- a/mod.ts
++++ b/mod.ts
+@@ -1,6 +1,12 @@
+ // BEWARE: This file is *generated* by the esbuild-radashi plugin. Do not edit directly!
+ 
+-export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType, type CastArray, type CastArrayIfExists, type CloningStrategy, type Comparable, type ComparableProperty, type Comparator, type ComparatorMapping, type CompatibleProperty, type Crush, type CustomClass, type CustomClassRegistry, type DebounceFunction, type DebounceOptions, DefaultCloningStrategy, type Err, type ExtractArray, type ExtractMap, type ExtractNotAny, type ExtractSet, FastCloningStrategy, type FilteredKeys, type Flip, type Intersect, type IsExactType, type KeyFilter, type KeyFilterFunction, type LowercaseKeys, type MappedInput, type MappedOutput, type Mapping, type MappingFunction, type MemoOptions, type Ok, type OnceFunction, type OptionalKeys, type OptionalMapping, type Primitive, type RequiredKeys, type Result, type ResultPromise, type RetryOptions, type Series, type Simplify, type StrictExtract, type SwitchAny, type SwitchNever, type ThrottledFunction, type TraverseContext, type TraverseOptions, type TraverseVisitor, type TryitResult, type TypedArray, type UppercaseKeys, all, alphabetical, always, assign, boil, callable, camel, capitalize, castArray, castArrayIfExists, castComparator, castMapping, chain, clamp, clone, cloneDeep, cluster, compose, construct, counting, crush, dash, debounce, defer, diff, draw, filterKey, first, flat, flip, fork, get, group, guard, inRange, intersects, invert, isArray, isBoolean, isDate, isEmpty, isEqual, isError, isFloat, isFunction, isInt, isIntString, isIterable, isMap, isNumber, isObject, isPlainObject, isPrimitive, isPromise, isRegExp, isResult, isResultErr, isResultOk, isSet, isString, isSymbol, isTagged, isWeakMap, isWeakSet, iterate, keys, last, lerp, list, listify, lowerize, map, mapEntries, mapKeys, mapValues, mapify, max, memo, merge, min, noop, objectify, omit, once, parallel, partial, partob, pascal, pick, proxied, random, range, reduce, replace, replaceOrAppend, retry, round, select, selectFirst, series, set, shake, shift, shuffle, sift, similarity, sleep, snake, sort, sum, template, throttle, title, toFloat, toInt, toggle, traverse, trim, try, tryit, uid, unique, unzip, upperize, withResolvers, zip, zipToObject } from './node_modules/radashi/dist/radashi'
++export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType, type CastArray, type CastArrayIfExists, type CloningStrategy, type Comparable, type ComparableProperty, type Comparator, type ComparatorMapping, type CompatibleProperty, type Crush, type CustomClass, type CustomClassRegistry, type DebounceFunction, type DebounceOptions, DefaultCloningStrategy, type Err, type ExtractArray, type ExtractMap, type ExtractNotAny, type ExtractSet, FastCloningStrategy, type FilteredKeys, type Flip, type Intersect, type IsExactType, type KeyFilter, type KeyFilterFunction, type LowercaseKeys, type MappedInput, type MappedOutput, type Mapping, type MappingFunction, type MemoOptions, type Ok, type OnceFunction, type OptionalKeys, type OptionalMapping, type Primitive, type RequiredKeys, type Result, type ResultPromise, type RetryOptions, type Series, type Simplify, type StrictExtract, type SwitchAny, type SwitchNever, type ThrottledFunction, type TraverseContext, type TraverseOptions, type TraverseVisitor, type TryitResult, type TypedArray, type UppercaseKeys, all, alphabetical, always, assign, boil, callable, camel, capitalize, castArray, castArrayIfExists, castComparator, castMapping, chain, clamp, clone, cloneDeep, cluster, compose, counting, crush, dash, debounce, defer, diff, draw, filterKey, first, flat, flip, fork, get, group, guard, inRange, intersects, invert, isArray, isBoolean, isDate, isEmpty, isEqual, isError, isFloat, isFunction, isInt, isIntString, isIterable, isMap, isNumber, isObject, isPlainObject, isPrimitive, isPromise, isRegExp, isResult, isResultErr, isResultOk, isSet, isString, isSymbol, isTagged, isWeakMap, isWeakSet, iterate, keys, last, lerp, list, listify, lowerize, map, mapEntries, mapKeys, mapValues, mapify, max, memo, merge, min, noop, objectify, omit, once, parallel, partial, partob, pascal, pick, proxied, random, range, reduce, replace, replaceOrAppend, retry, round, select, selectFirst, series, shake, shift, shuffle, sift, similarity, sleep, snake, sort, sum, template, throttle, title, toFloat, toInt, toggle, traverse, trim, try, tryit, uid, unique, unzip, upperize, withResolvers, zip, zipToObject } from './node_modules/radashi/dist/radashi'
+ 
+ // Our custom functions.
+ export { add } from './src/number/add.ts'
++
++// Our overrides.
++export { set } from './overrides/src/object/set.ts'
++
++// Rewired to use our overrides.
++export { construct } from './overrides/rewired/object/construct.ts'
+diff --git a/overrides/benchmarks/object/set.bench.ts b/overrides/benchmarks/object/set.bench.ts
+new file mode 100644
+index 0000000..b0a4e16
+--- /dev/null
++++ b/overrides/benchmarks/object/set.bench.ts
+@@ -0,0 +1,20 @@
++import * as _ from 'radashi'
++import { bench } from 'vitest'
++
++describe('set', () => {
++  bench('with simple path', () => {
++    _.set({}, 'foo', 0)
++  })
++
++  bench('with deep path', () => {
++    _.set({}, 'cards.value', 2)
++  })
++
++  bench('with array index path', () => {
++    _.set({}, 'cards.0.value', 2)
++  })
++
++  bench('with numeric key', () => {
++    _.set({}, 'cards.0value', 2)
++  })
++})
+diff --git a/overrides/docs/object/set.mdx b/overrides/docs/object/set.mdx
+new file mode 100644
+index 0000000..ae6008a
+--- /dev/null
++++ b/overrides/docs/object/set.mdx
+@@ -0,0 +1,18 @@
++---
++title: set
++description: Set a value on an object using a path key
++---
++
++### Usage
++
++Opposite of get, dynamically set a nested value into an object using a key path. Does not modify the given initial object.
++
++\`\`\`ts
++import * as _ from 'radashi'
++
++_.set({}, 'name', 'ra')
++// => { name: 'ra' }
++
++_.set({}, 'cards[0].value', 2)
++// => { cards: [{ value: 2 }] }
++\`\`\`
+diff --git a/overrides/rewired.json b/overrides/rewired.json
+index 0637a08..0faa27e 100644
+--- a/overrides/rewired.json
++++ b/overrides/rewired.json
+@@ -1 +1,3 @@
+-[]
+\\ No newline at end of file
++[
++  "object/construct"
++]
+\\ No newline at end of file
+diff --git a/overrides/src/object/set.ts b/overrides/src/object/set.ts
+new file mode 100644
+index 0000000..180307c
+--- /dev/null
++++ b/overrides/src/object/set.ts
+@@ -0,0 +1,39 @@
++import { clone, isIntString } from 'radashi'
++
++/**
++ * Opposite of get, dynamically set a nested value into an object
++ * using a key path. Does not modify the given initial object.
++ *
++ * @see https://radashi.js.org/reference/object/set
++ * @example
++ * \`\`\`ts
++ * set({}, 'name', 'ra') // => { name: 'ra' }
++ * set({}, 'cards[0].value', 2) // => { cards: [{ value: 2 }] }
++ * \`\`\`
++ */
++export function set<T extends object, K>(
++  initial: T,
++  path: string,
++  value: K,
++): T {
++  if (!initial) {
++    return {} as T
++  }
++  if (!path || value === undefined) {
++    return initial
++  }
++
++  const root: any = clone(initial)
++  const keys = path.match(/[^.[\\]]+/g)
++  if (keys) {
++    keys.reduce(
++      (object, key, i) =>
++        i < keys.length - 1
++          ? (object[key] ??= isIntString(keys[i + 1]) ? [] : {})
++          : (object[key] = value),
++      root,
++    )
++  }
++
++  return root
++}
+diff --git a/overrides/tests/object/set.test.ts b/overrides/tests/object/set.test.ts
+new file mode 100644
+index 0000000..1a2464b
+--- /dev/null
++++ b/overrides/tests/object/set.test.ts
+@@ -0,0 +1,44 @@
++import * as _ from 'radashi'
++
++describe('set', () => {
++  test('handles bad input', () => {
++    expect(_.set({}, '', {})).toEqual({})
++    expect(_.set({}, null as any, {})).toEqual({})
++    expect(_.set({}, '', null as any)).toEqual({})
++    expect(_.set(null as any, '', {})).toEqual({})
++    expect(_.set(null as any, null as any, null as any)).toEqual({})
++    expect(_.set({ foo: true }, 'foo', false)).toEqual({ foo: false })
++    expect(_.set({}, 'foo', 0)).toEqual({ foo: 0 })
++  })
++  test('sets deep values correctly', () => {
++    expect(_.set({}, 'cards.value', 2)).toEqual({
++      cards: { value: 2 },
++    })
++    expect(_.set({}, 'cards.0.value', 2)).toEqual({
++      cards: [{ value: 2 }],
++    })
++    expect(_.set({}, 'cards.2.value', 2)).toEqual({
++      cards: [undefined, undefined, { value: 2 }],
++    })
++    expect(_.set({}, 'cards.0.0.value', 2)).toEqual({
++      cards: [[{ value: 2 }]],
++    })
++    expect(_.set({}, 'cards.2.2.value', 2)).toEqual({
++      cards: [undefined, undefined, [undefined, undefined, { value: 2 }]],
++    })
++    expect(_.set({}, 'cards.[0].[0].value', 2)).toEqual({
++      cards: [[{ value: 2 }]],
++    })
++    expect(_.set({}, 'cards.[1].[1].value', 2)).toEqual({
++      cards: [undefined, [undefined, { value: 2 }]],
++    })
++  })
++  test('sets keys starting with numbers correctly', () => {
++    expect(_.set({}, 'cards.0value', 2)).toEqual({
++      cards: { '0value': 2 },
++    })
++    expect(_.set({}, 'cards.1234value', 2)).toEqual({
++      cards: { '1234value': 2 },
++    })
++  })
++})"
+`;
+
+exports[`override a function > interactive prompts 1`] = `
+[
+  [
+    {
+      "choices": [
+        {
+          "title": "array/alphabetical",
+          "value": "array/alphabetical",
+        },
+        {
+          "title": "array/boil",
+          "value": "array/boil",
+        },
+        {
+          "title": "array/castArray",
+          "value": "array/castArray",
+        },
+        {
+          "title": "array/castArrayIfExists",
+          "value": "array/castArrayIfExists",
+        },
+        {
+          "title": "array/cluster",
+          "value": "array/cluster",
+        },
+        {
+          "title": "array/counting",
+          "value": "array/counting",
+        },
+        {
+          "title": "array/diff",
+          "value": "array/diff",
+        },
+        {
+          "title": "array/first",
+          "value": "array/first",
+        },
+        {
+          "title": "array/flat",
+          "value": "array/flat",
+        },
+        {
+          "title": "array/fork",
+          "value": "array/fork",
+        },
+        {
+          "title": "array/group",
+          "value": "array/group",
+        },
+        {
+          "title": "array/intersects",
+          "value": "array/intersects",
+        },
+        {
+          "title": "array/iterate",
+          "value": "array/iterate",
+        },
+        {
+          "title": "array/last",
+          "value": "array/last",
+        },
+        {
+          "title": "array/list",
+          "value": "array/list",
+        },
+        {
+          "title": "array/mapify",
+          "value": "array/mapify",
+        },
+        {
+          "title": "array/merge",
+          "value": "array/merge",
+        },
+        {
+          "title": "array/objectify",
+          "value": "array/objectify",
+        },
+        {
+          "title": "array/replace",
+          "value": "array/replace",
+        },
+        {
+          "title": "array/replaceOrAppend",
+          "value": "array/replaceOrAppend",
+        },
+        {
+          "title": "array/select",
+          "value": "array/select",
+        },
+        {
+          "title": "array/selectFirst",
+          "value": "array/selectFirst",
+        },
+        {
+          "title": "array/shift",
+          "value": "array/shift",
+        },
+        {
+          "title": "array/sift",
+          "value": "array/sift",
+        },
+        {
+          "title": "array/sort",
+          "value": "array/sort",
+        },
+        {
+          "title": "array/toggle",
+          "value": "array/toggle",
+        },
+        {
+          "title": "array/unique",
+          "value": "array/unique",
+        },
+        {
+          "title": "array/unzip",
+          "value": "array/unzip",
+        },
+        {
+          "title": "array/zip",
+          "value": "array/zip",
+        },
+        {
+          "title": "array/zipToObject",
+          "value": "array/zipToObject",
+        },
+        {
+          "title": "async/AggregateError",
+          "value": "async/AggregateError",
+        },
+        {
+          "title": "async/all",
+          "value": "async/all",
+        },
+        {
+          "title": "async/defer",
+          "value": "async/defer",
+        },
+        {
+          "title": "async/guard",
+          "value": "async/guard",
+        },
+        {
+          "title": "async/map",
+          "value": "async/map",
+        },
+        {
+          "title": "async/parallel",
+          "value": "async/parallel",
+        },
+        {
+          "title": "async/reduce",
+          "value": "async/reduce",
+        },
+        {
+          "title": "async/retry",
+          "value": "async/retry",
+        },
+        {
+          "title": "async/sleep",
+          "value": "async/sleep",
+        },
+        {
+          "title": "async/tryit",
+          "value": "async/tryit",
+        },
+        {
+          "title": "async/withResolvers",
+          "value": "async/withResolvers",
+        },
+        {
+          "title": "curry/callable",
+          "value": "curry/callable",
+        },
+        {
+          "title": "curry/chain",
+          "value": "curry/chain",
+        },
+        {
+          "title": "curry/compose",
+          "value": "curry/compose",
+        },
+        {
+          "title": "curry/debounce",
+          "value": "curry/debounce",
+        },
+        {
+          "title": "curry/flip",
+          "value": "curry/flip",
+        },
+        {
+          "title": "curry/memo",
+          "value": "curry/memo",
+        },
+        {
+          "title": "curry/once",
+          "value": "curry/once",
+        },
+        {
+          "title": "curry/partial",
+          "value": "curry/partial",
+        },
+        {
+          "title": "curry/partob",
+          "value": "curry/partob",
+        },
+        {
+          "title": "curry/proxied",
+          "value": "curry/proxied",
+        },
+        {
+          "title": "curry/throttle",
+          "value": "curry/throttle",
+        },
+        {
+          "title": "function/always",
+          "value": "function/always",
+        },
+        {
+          "title": "function/castComparator",
+          "value": "function/castComparator",
+        },
+        {
+          "title": "function/castMapping",
+          "value": "function/castMapping",
+        },
+        {
+          "title": "function/noop",
+          "value": "function/noop",
+        },
+        {
+          "title": "object/assign",
+          "value": "object/assign",
+        },
+        {
+          "title": "object/clone",
+          "value": "object/clone",
+        },
+        {
+          "title": "object/cloneDeep",
+          "value": "object/cloneDeep",
+        },
+        {
+          "title": "object/construct",
+          "value": "object/construct",
+        },
+        {
+          "title": "object/crush",
+          "value": "object/crush",
+        },
+        {
+          "title": "object/filterKey",
+          "value": "object/filterKey",
+        },
+        {
+          "title": "object/get",
+          "value": "object/get",
+        },
+        {
+          "title": "object/invert",
+          "value": "object/invert",
+        },
+        {
+          "title": "object/keys",
+          "value": "object/keys",
+        },
+        {
+          "title": "object/listify",
+          "value": "object/listify",
+        },
+        {
+          "title": "object/lowerize",
+          "value": "object/lowerize",
+        },
+        {
+          "title": "object/mapEntries",
+          "value": "object/mapEntries",
+        },
+        {
+          "title": "object/mapKeys",
+          "value": "object/mapKeys",
+        },
+        {
+          "title": "object/mapValues",
+          "value": "object/mapValues",
+        },
+        {
+          "title": "object/omit",
+          "value": "object/omit",
+        },
+        {
+          "title": "object/pick",
+          "value": "object/pick",
+        },
+        {
+          "title": "object/set",
+          "value": "object/set",
+        },
+        {
+          "title": "object/shake",
+          "value": "object/shake",
+        },
+        {
+          "title": "object/traverse",
+          "value": "object/traverse",
+        },
+        {
+          "title": "object/upperize",
+          "value": "object/upperize",
+        },
+        {
+          "title": "number/clamp",
+          "value": "number/clamp",
+        },
+        {
+          "title": "number/inRange",
+          "value": "number/inRange",
+        },
+        {
+          "title": "number/lerp",
+          "value": "number/lerp",
+        },
+        {
+          "title": "number/max",
+          "value": "number/max",
+        },
+        {
+          "title": "number/min",
+          "value": "number/min",
+        },
+        {
+          "title": "number/range",
+          "value": "number/range",
+        },
+        {
+          "title": "number/round",
+          "value": "number/round",
+        },
+        {
+          "title": "number/sum",
+          "value": "number/sum",
+        },
+        {
+          "title": "number/toFloat",
+          "value": "number/toFloat",
+        },
+        {
+          "title": "number/toInt",
+          "value": "number/toInt",
+        },
+        {
+          "title": "random/draw",
+          "value": "random/draw",
+        },
+        {
+          "title": "random/random",
+          "value": "random/random",
+        },
+        {
+          "title": "random/shuffle",
+          "value": "random/shuffle",
+        },
+        {
+          "title": "random/uid",
+          "value": "random/uid",
+        },
+        {
+          "title": "series/series",
+          "value": "series/series",
+        },
+        {
+          "title": "string/camel",
+          "value": "string/camel",
+        },
+        {
+          "title": "string/capitalize",
+          "value": "string/capitalize",
+        },
+        {
+          "title": "string/dash",
+          "value": "string/dash",
+        },
+        {
+          "title": "string/pascal",
+          "value": "string/pascal",
+        },
+        {
+          "title": "string/similarity",
+          "value": "string/similarity",
+        },
+        {
+          "title": "string/snake",
+          "value": "string/snake",
+        },
+        {
+          "title": "string/template",
+          "value": "string/template",
+        },
+        {
+          "title": "string/title",
+          "value": "string/title",
+        },
+        {
+          "title": "string/trim",
+          "value": "string/trim",
+        },
+        {
+          "title": "typed/isArray",
+          "value": "typed/isArray",
+        },
+        {
+          "title": "typed/isBoolean",
+          "value": "typed/isBoolean",
+        },
+        {
+          "title": "typed/isDate",
+          "value": "typed/isDate",
+        },
+        {
+          "title": "typed/isEmpty",
+          "value": "typed/isEmpty",
+        },
+        {
+          "title": "typed/isEqual",
+          "value": "typed/isEqual",
+        },
+        {
+          "title": "typed/isError",
+          "value": "typed/isError",
+        },
+        {
+          "title": "typed/isFloat",
+          "value": "typed/isFloat",
+        },
+        {
+          "title": "typed/isFunction",
+          "value": "typed/isFunction",
+        },
+        {
+          "title": "typed/isInt",
+          "value": "typed/isInt",
+        },
+        {
+          "title": "typed/isIntString",
+          "value": "typed/isIntString",
+        },
+        {
+          "title": "typed/isIterable",
+          "value": "typed/isIterable",
+        },
+        {
+          "title": "typed/isMap",
+          "value": "typed/isMap",
+        },
+        {
+          "title": "typed/isNumber",
+          "value": "typed/isNumber",
+        },
+        {
+          "title": "typed/isObject",
+          "value": "typed/isObject",
+        },
+        {
+          "title": "typed/isPlainObject",
+          "value": "typed/isPlainObject",
+        },
+        {
+          "title": "typed/isPrimitive",
+          "value": "typed/isPrimitive",
+        },
+        {
+          "title": "typed/isPromise",
+          "value": "typed/isPromise",
+        },
+        {
+          "title": "typed/isRegExp",
+          "value": "typed/isRegExp",
+        },
+        {
+          "title": "typed/isResult",
+          "value": "typed/isResult",
+        },
+        {
+          "title": "typed/isResultErr",
+          "value": "typed/isResultErr",
+        },
+        {
+          "title": "typed/isResultOk",
+          "value": "typed/isResultOk",
+        },
+        {
+          "title": "typed/isSet",
+          "value": "typed/isSet",
+        },
+        {
+          "title": "typed/isString",
+          "value": "typed/isString",
+        },
+        {
+          "title": "typed/isSymbol",
+          "value": "typed/isSymbol",
+        },
+        {
+          "title": "typed/isTagged",
+          "value": "typed/isTagged",
+        },
+        {
+          "title": "typed/isWeakMap",
+          "value": "typed/isWeakMap",
+        },
+        {
+          "title": "typed/isWeakSet",
+          "value": "typed/isWeakSet",
+        },
+      ],
+      "message": "Which function do you want to copy?",
+      "name": "selectedFunc",
+      "type": "autocomplete",
+    },
+  ],
+]
+`;
+
+exports[`override a function > logs 1`] = `
+"[info] 5 files copied.
+[info] 
+[info] [test *******] chore: override object/set
+[info]  Author: Radashi Bot <175859458+radashi-bot@users.noreply.github.com>
+[info]  6 files changed, 131 insertions(+), 2 deletions(-)
+[info]  create mode 100644 overrides/benchmarks/object/set.bench.ts
+[info]  create mode 100644 overrides/docs/object/set.mdx
+[info]  create mode 100644 overrides/src/object/set.ts
+[info]  create mode 100644 overrides/tests/object/set.test.ts
+[info] 
+[info] Override committed to the current branch."
+`;
+
+exports[`override a function > opened files 1`] = `
+[
+  "overrides/src/object/set.ts",
+]
+`;

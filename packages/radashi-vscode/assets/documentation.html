@@ -1,0 +1,66 @@
+<style>
+  pre {
+    padding: 1.2rem 0.8rem;
+    border-radius: 0.4rem;
+    background-color: var(--vscode-editor-background);
+  }
+  pre code {
+    background: none !important;
+  }
+</style>
+
+<script type="module">
+  import * as shiki from "https://esm.sh/shiki@1.12.0";
+
+  const codeElems = Array.from(document.querySelectorAll("pre > code"));
+
+  const langs = new Set();
+  for (const codeElem of codeElems) {
+    const lang = codeElem.className.match(/language-(\w+)/)?.[1];
+    if (lang) {
+      langs.add(lang);
+    }
+  }
+
+  // Get the current theme name from the body element
+  const themeId = document.body.getAttribute("data-vscode-theme-id");
+
+  // Wait for the theme data from VS Code
+  window.addEventListener("message", async (event) => {
+    const message = event.data;
+    if (message.command === "setTheme") {
+      const highlighter = await shiki.getHighlighter({
+        themes: [message.theme],
+        langs: Array.from(langs),
+      });
+
+      for (const codeElem of codeElems) {
+        const code = codeElem.textContent;
+        const renderedHtml = await highlighter.codeToHtml(code, {
+          lang: codeElem.className.match(/language-(\w+)/)?.[1] || "text",
+          theme: message.theme.name,
+        });
+
+        const preElem = codeElem.parentElement;
+        const parsedHtml = new DOMParser().parseFromString(
+          renderedHtml,
+          "text/html"
+        );
+        const renderedPre = parsedHtml.querySelector("pre");
+        if (renderedPre) {
+          renderedPre.removeAttribute("style");
+          preElem.replaceWith(renderedPre);
+        }
+      }
+    }
+  });
+
+  // Send the theme name back to the extension
+  if (themeId) {
+    const vscode = acquireVsCodeApi();
+    vscode.postMessage({
+      command: "themeDetected",
+      theme: themeId,
+    });
+  }
+</script>

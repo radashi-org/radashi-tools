@@ -1,0 +1,19 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "extends": ["@radashi-org/biome-config"],
+  "linter": {
+    "rules": {
+      "performance": {
+        "noDelete": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "useLiteralKeys": "off"
+      },
+      "style": {
+        "useImportType": "warn",
+        "noUnusedTemplateLiteral": "off"
+      }
+    }
+  }
+}

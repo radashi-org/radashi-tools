@@ -1,0 +1,6 @@
+**/*.ts
+**/.aider*
+**/.aider*/
+.gitignore
+tsconfig.json
+node_modules

@@ -1,0 +1,65 @@
+{
+  "name": "radashi-helper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Help with managing your own Radashi",
+  "author": "Alec Larson",
+  "license": "MIT",
+  "bin": {
+    "radashi": "./bin/radashi-helper.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/cli.d.ts",
+      "default": "./dist/cli.js"
+    },
+    "./esbuild": {
+      "types": "./dist/esbuild/plugin.d.ts",
+      "default": "./dist/esbuild/plugin.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest/plugin.d.ts",
+      "default": "./dist/vitest/plugin.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "radashi",
+    "cli"
+  ],
+  "scripts": {
+    "build": "tsup-node --clean",
+    "dev": "tsup-node --clean --watch --sourcemap",
+    "lint": "tsc -p . && tsc -p test",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.8",
+    "cac": "^6.7.14",
+    "debug": "^4.3.5",
+    "esbuild": "^0.23.0",
+    "escalade": "^3.1.2",
+    "execa": "^9.3.0",
+    "fast-glob": "^3.3.2",
+    "glob-regex": "^0.3.2",
+    "p-lazy": "^4.0.0",
+    "parse-imports-exports": "^0.1.1",
+    "prompts": "^2.4.2",
+    "radashi": "12.2.0-beta.af825f4"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^20.16.0",
+    "@types/prompts": "^2.4.9",
+    "kleur": "^4.1.5",
+    "string-argv": "^0.3.2",
+    "strip-ansi": "^7.1.0",
+    "tsup": "^8.1.2",
+    "type-fest": "^4.22.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4",
+    "vitest": "^2.0.5"
+  }
+}

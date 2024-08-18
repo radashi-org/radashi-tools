@@ -1,0 +1,168 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`create a function > git diff (all-staged) 1`] = `
+"diff --git a/benchmarks/test/test.bench.ts b/benchmarks/test/test.bench.ts
+new file mode 100644
+index 0000000..f62fb89
+--- /dev/null
++++ b/benchmarks/test/test.bench.ts
+@@ -0,0 +1,8 @@
++import * as _ from 'radashi'
++import { bench } from 'vitest'
++
++describe('test', () => {
++  bench('with no arguments', () => {
++    _.test()
++  })
++})
+diff --git a/docs/test/test.mdx b/docs/test/test.mdx
+new file mode 100644
+index 0000000..fbb3998
+--- /dev/null
++++ b/docs/test/test.mdx
+@@ -0,0 +1,14 @@
++---
++title: test
++description: test
++---
++
++### Usage
++
++Does a thing. Returns a value.
++
++\`\`\`ts
++import * as _ from 'radashi'
++
++_.test()
++\`\`\`
+diff --git a/mod.ts b/mod.ts
+index 1807e49..4394d32 100644
+--- a/mod.ts
++++ b/mod.ts
+@@ -4,3 +4,4 @@ export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType
+ 
+ // Our custom functions.
+ export { add } from './src/number/add.ts'
++export { test } from './src/test/test.ts'
+diff --git a/src/test/test.ts b/src/test/test.ts
+new file mode 100644
+index 0000000..5d84801
+--- /dev/null
++++ b/src/test/test.ts
+@@ -0,0 +1,10 @@
++/**
++  * Does a thing.
++  *
++  * @see https://radashi.js.org/reference/test/test
++  * @example
++  * \`\`\`ts
++  * test()
++  * \`\`\`
++  */
++  export function test(): void {}
+diff --git a/tests/test/test.test.ts b/tests/test/test.test.ts
+new file mode 100644
+index 0000000..acfcaca
+--- /dev/null
++++ b/tests/test/test.test.ts
+@@ -0,0 +1,7 @@
++import * as _ from 'radashi'
++
++describe('test', () => {
++  test('does a thing', () => {
++    expect(_.test()).toBe(undefined)
++  })
++})"
+`;
+
+exports[`create a function > interactive prompts 1`] = `
+[
+  [
+    {
+      "message": "Enter the name for the new function:",
+      "name": "funcName",
+      "type": "text",
+    },
+  ],
+  [
+    {
+      "choices": [
+        {
+          "title": "Create a new group",
+          "value": "new",
+        },
+        {
+          "title": "array",
+          "value": "array",
+        },
+        {
+          "title": "async",
+          "value": "async",
+        },
+        {
+          "title": "curry",
+          "value": "curry",
+        },
+        {
+          "title": "function",
+          "value": "function",
+        },
+        {
+          "title": "number",
+          "value": "number",
+        },
+        {
+          "title": "object",
+          "value": "object",
+        },
+        {
+          "title": "random",
+          "value": "random",
+        },
+        {
+          "title": "series",
+          "value": "series",
+        },
+        {
+          "title": "string",
+          "value": "string",
+        },
+        {
+          "title": "typed",
+          "value": "typed",
+        },
+      ],
+      "message": "Select a group for the function:",
+      "name": "selectedGroup",
+      "type": "autocomplete",
+    },
+  ],
+  [
+    {
+      "message": "Enter the name for the new group:",
+      "name": "newGroup",
+      "type": "text",
+    },
+  ],
+  [
+    {
+      "message": "Enter a description for test:",
+      "name": "description",
+      "type": "text",
+    },
+  ],
+]
+`;
+
+exports[`create a function > logs 1`] = `
+"[info] Created docs/test/test.mdx
+[info] Created src/test/test.ts
+[info] Created tests/test/test.test.ts
+[info] Created benchmarks/test/test.bench.ts"
+`;
+
+exports[`create a function > opened files 1`] = `
+[
+  "src/test/test.ts",
+]
+`;

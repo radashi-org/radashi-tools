@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`move a function > git diff (all-staged) 1`] = `
+"diff --git a/benchmarks/number/add.bench.ts b/benchmarks/test/combine.bench.ts
+similarity index 100%
+rename from benchmarks/number/add.bench.ts
+rename to benchmarks/test/combine.bench.ts
+diff --git a/docs/number/add.mdx b/docs/test/combine.mdx
+similarity index 100%
+rename from docs/number/add.mdx
+rename to docs/test/combine.mdx
+diff --git a/src/number/add.ts b/src/test/combine.ts
+similarity index 100%
+rename from src/number/add.ts
+rename to src/test/combine.ts
+diff --git a/tests/number/add.test.ts b/tests/test/combine.test.ts
+similarity index 100%
+rename from tests/number/add.test.ts
+rename to tests/test/combine.test.ts"
+`;
+
+exports[`move a function > interactive prompts 1`] = `
+[
+  [
+    {
+      "choices": [
+        {
+          "title": "number/add",
+          "value": "number/add",
+        },
+      ],
+      "message": "Select a function to move:",
+      "name": "selectedFunc",
+      "type": "autocomplete",
+    },
+  ],
+  [
+    {
+      "choices": [
+        {
+          "title": "Move function to a new group",
+          "value": "move",
+        },
+        {
+          "title": "Rename function",
+          "value": "rename",
+        },
+        {
+          "title": "Both move and rename",
+          "value": "both",
+        },
+      ],
+      "message": "What would you like to do?",
+      "name": "action",
+      "type": "select",
+    },
+  ],
+  [
+    {
+      "choices": [
+        {
+          "title": "Create a new group",
+          "value": "new",
+        },
+        {
+          "title": "array",
+          "value": "array",
+        },
+        {
+          "title": "async",
+          "value": "async",
+        },
+        {
+          "title": "curry",
+          "value": "curry",
+        },
+        {
+          "title": "function",
+          "value": "function",
+        },
+        {
+          "title": "number",
+          "value": "number",
+        },
+        {
+          "title": "object",
+          "value": "object",
+        },
+        {
+          "title": "random",
+          "value": "random",
+        },
+        {
+          "title": "series",
+          "value": "series",
+        },
+        {
+          "title": "string",
+          "value": "string",
+        },
+        {
+          "title": "typed",
+          "value": "typed",
+        },
+      ],
+      "message": "Select a group for the function:",
+      "name": "selectedGroup",
+      "type": "autocomplete",
+    },
+  ],
+  [
+    {
+      "message": "Enter the new group name:",
+      "name": "newGroup",
+      "type": "text",
+    },
+  ],
+  [
+    {
+      "message": "Enter the new function name:",
+      "name": "newFuncName",
+      "type": "text",
+    },
+  ],
+]
+`;
+
+exports[`move a function > logs 1`] = `
+"[info] Renaming ./src/number/add.ts to ./src/test/combine.ts
+[info] Removing empty directory: ./src/number
+[info] Renaming ./docs/number/add.mdx to ./docs/test/combine.mdx
+[info] Removing empty directory: ./docs/number
+[info] Renaming ./benchmarks/number/add.bench.ts to ./benchmarks/test/combine.bench.ts
+[info] Removing empty directory: ./benchmarks/number
+[info] Renaming ./tests/number/add.test.ts to ./tests/test/combine.test.ts
+[info] Removing empty directory: ./tests/number"
+`;
+
+exports[`move a function > opened files 1`] = `[]`;

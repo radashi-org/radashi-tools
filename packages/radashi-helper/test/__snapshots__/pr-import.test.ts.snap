@@ -1,0 +1,144 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`import a pr > git diff (last-commit) 1`] = `
+"diff --git a/benchmarks/number/spiralSum.bench.ts b/benchmarks/number/spiralSum.bench.ts
+new file mode 100644
+index 0000000..2fe6664
+--- /dev/null
++++ b/benchmarks/number/spiralSum.bench.ts
+@@ -0,0 +1,7 @@
++import * as _ from 'radashi'
++
++describe('spiralSum', () => {
++  bench('calculate spiral sum for n=5', () => {
++    _.spiralSum(5)
++  })
++})
+diff --git a/docs/number/spiralSum.mdx b/docs/number/spiralSum.mdx
+new file mode 100644
+index 0000000..1c2d6f9
+--- /dev/null
++++ b/docs/number/spiralSum.mdx
+@@ -0,0 +1,39 @@
++---
++title: spiralSum
++description: Calculates the sum of numbers in a spiral pattern
++---
++
++### Usage
++
++The \`spiralSum\` function calculates the sum of numbers in a unique spiral pattern up to a specified number of terms.
++
++\`\`\`ts
++import { spiralSum } from 'radashi'
++
++spiralSum(5) // => 25
++\`\`\`
++
++### How It Works
++
++The spiral pattern is formed by summing consecutive odd numbers:
++
++1. First term: 1
++2. Second term: 1 + 3 = 4
++3. Third term: 1 + 3 + 5 = 9
++4. Fourth term: 1 + 3 + 5 + 7 = 16
++5. Fifth term: 1 + 3 + 5 + 7 + 9 = 25
++
++And so on...
++
++### Edge Cases
++
++- If \`n\` is 0 or negative, the function returns 0.
++
++\`\`\`ts
++spiralSum(0) // => 0
++spiralSum(-1) // => 0
++\`\`\`
++
++## Notes
++
++This function is primarily used for testing and demonstration purposes. It provides a simple way to generate an interesting numerical sequence based on a spiral pattern of odd numbers.
+diff --git a/mod.ts b/mod.ts
+index 1807e49..bfa483f 100644
+--- a/mod.ts
++++ b/mod.ts
+@@ -4,3 +4,4 @@ export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType
+ 
+ // Our custom functions.
+ export { add } from './src/number/add.ts'
++export { spiralSum } from './src/number/spiralSum.ts'
+diff --git a/src/number/spiralSum.ts b/src/number/spiralSum.ts
+new file mode 100644
+index 0000000..578d552
+--- /dev/null
++++ b/src/number/spiralSum.ts
+@@ -0,0 +1,32 @@
++/**
++ * Calculates the sum of numbers in a spiral pattern up to n terms.
++ *
++ * The spiral pattern goes: 1, 1+3, 1+3+5, 1+3+5+7, 1+3+5+7+9, ...
++ * Where each term adds the next odd number to the previous sum.
++ *
++ * @example
++ * \`\`\`typescript
++ * spiralSum(1) // => 1
++ * spiralSum(2) // => 4
++ * spiralSum(3) // => 9
++ * spiralSum(4) // => 16
++ * spiralSum(5) // => 25
++ * \`\`\`
++ */
++export function spiralSum(n: number): number {
++  if (n <= 0) {
++    return 0
++  }
++
++  let total = 1
++  let current = 1
++  let increment = 1
++
++  for (let i = 1; i < n; i++) {
++    increment += 2
++    current += increment
++    total += current
++  }
++
++  return total
++}
+diff --git a/tests/number/spiralSum.test.ts b/tests/number/spiralSum.test.ts
+new file mode 100644
+index 0000000..f4a7154
+--- /dev/null
++++ b/tests/number/spiralSum.test.ts
+@@ -0,0 +1,17 @@
++import * as _ from 'radashi'
++
++describe('spiralSum', () => {
++  it('calculates the correct spiral sum for various inputs', () => {
++    expect(_.spiralSum(0)).toBe(0)
++    expect(_.spiralSum(1)).toBe(1)
++    expect(_.spiralSum(2)).toBe(4)
++    expect(_.spiralSum(3)).toBe(9)
++    expect(_.spiralSum(4)).toBe(16)
++    expect(_.spiralSum(5)).toBe(25)
++  })
++
++  it('returns 0 for negative inputs', () => {
++    expect(_.spiralSum(-1)).toBe(0)
++    expect(_.spiralSum(-100)).toBe(0)
++  })
++})"
+`;
+
+exports[`import a pr > logs 1`] = `
+"[info] Checking out PR...
+[info] 
+[info] [test *******] feat: add \`spiralSum\` function
+[info]  Author: Radashi Bot <175859458+radashi-bot@users.noreply.github.com>
+[info]  5 files changed, 96 insertions(+)
+[info]  create mode 100644 benchmarks/number/spiralSum.bench.ts
+[info]  create mode 100644 docs/number/spiralSum.mdx
+[info]  create mode 100644 src/number/spiralSum.ts
+[info]  create mode 100644 tests/number/spiralSum.test.ts"
+`;
