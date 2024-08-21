@@ -85,7 +85,7 @@
     "algoliasearch": "4.24.0",
     "execa": "9.3.1",
     "fast-glob": "3.3.2",
-    "radashi-helper": "^0.1.0",
+    "radashi-helper": "workspace:^",
     "yaml": "2.5.0"
   }
 }
