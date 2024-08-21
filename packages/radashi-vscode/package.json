@@ -74,7 +74,8 @@
     "prepackage": "pnpm -s build && node scripts/pre-package.mjs",
     "package": "cd dist && vsce package",
     "prerelease": "pnpm -s build && node scripts/pre-package.mjs",
-    "release": "cd dist && vsce publish"
+    "release": "cd dist && vsce publish",
+    "format": "biome check --fix --unsafe"
   },
   "devDependencies": {
     "@types/vscode": "^1.75.0",

@@ -28,6 +28,7 @@
     "build": "tsup-node --clean",
     "dev": "tsup-node --clean --watch --sourcemap",
     "lint": "tsc -p . && tsc -p test",
+    "format": "biome check --fix --unsafe",
     "test": "vitest"
   },
   "dependencies": {
