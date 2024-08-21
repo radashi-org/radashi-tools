@@ -22,18 +22,6 @@
         "enablement": "radashi.hasRadashiWorkspace"
       },
       {
-        "command": "radashi.publishMyRadashiToNPM",
-        "title": "🔧 Publish My Radashi To NPM",
-        "category": "Radashi",
-        "enablement": "radashi.hasRadashiWorkspace"
-      },
-      {
-        "command": "radashi.createPullRequest",
-        "title": "🔧 Create PR for Current Branch",
-        "category": "Radashi",
-        "enablement": "radashi.hasRadashiWorkspace"
-      },
-      {
         "command": "radashi.moveFunction",
         "title": "🔧 Move Function",
         "category": "Radashi",
@@ -69,11 +57,6 @@
       {
         "command": "radashi.exploreCoreFunctions",
         "title": "✳️ Explore Core Functions",
-        "category": "Radashi"
-      },
-      {
-        "command": "radashi.exploreCommunityFunctions",
-        "title": "✳️ Explore Community Functions",
         "category": "Radashi"
       }
     ],

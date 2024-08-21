@@ -28,12 +28,6 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.commands.registerCommand('radashi.exploreCoreFunctions', () => {
         open('https://radashi.js.org/reference')
       }),
-      vscode.commands.registerCommand(
-        'radashi.exploreCommunityFunctions',
-        () => {
-          open('https://radashi.js.org/open-library')
-        },
-      ),
     )
 
     vscode.commands.executeCommand(
@@ -59,20 +53,6 @@ export function activate(context: vscode.ExtensionContext) {
             await helper.run(['fn', 'override', '--dir', radashiFolder.path])
           },
         ),
-        // vscode.commands.registerCommand(
-        //   'radashi.publishMyRadashiToNPM',
-        //   async () => {
-        //     const { publishToNPM } = await import('./commands/publish.js')
-        //     publishToNPM()
-        //   },
-        // ),
-        // vscode.commands.registerCommand(
-        //   'radashi.createPullRequest',
-        //   async () => {
-        //     const { createPullRequest } = await import('./commands/createPR.js')
-        //     createPullRequest()
-        //   },
-        // ),
         vscode.commands.registerCommand('radashi.importFunction', async () => {
           const prNumber = await vscode.window.showInputBox({
             prompt: 'Enter the PR number to import',
