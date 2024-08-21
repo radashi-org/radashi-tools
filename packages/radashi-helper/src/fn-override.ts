@@ -94,7 +94,7 @@ export async function addOverride(
   })
 
   const { default: build } = await import('./build')
-  await build()
+  await build({ env })
 
   // Log a blank line.
   log('')

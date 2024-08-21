@@ -221,7 +221,7 @@ export async function importPullRequest(
 
   // Update mod.ts
   const { default: build } = await import('./build')
-  await build()
+  await build({ env })
 
   // Print a blank line.
   log('')

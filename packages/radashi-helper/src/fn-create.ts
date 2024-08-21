@@ -134,7 +134,7 @@ export async function createFunction(
 
   // Update mod.ts
   const { default: build } = await import('./build')
-  await build()
+  await build({ env })
 }
 
 async function createFile(file: string, content: string): Promise<void> {
