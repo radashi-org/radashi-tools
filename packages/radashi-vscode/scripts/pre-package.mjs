@@ -1,3 +1,4 @@
+import glob from 'fast-glob'
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -26,6 +27,20 @@ fs.copyFileSync(readmePath, distReadmePath)
 const licensePath = path.resolve('../../LICENSE.md')
 const distLicensePath = path.resolve('dist', 'LICENSE.md')
 fs.copyFileSync(licensePath, distLicensePath)
+
+// Add .vscodeignore
+const ignored = ['node_modules']
+fs.writeFileSync(path.resolve('dist', '.vscodeignore'), ignored.join('\n'))
+
+// Copy assets to dist folder
+const assetsGlob = './assets/**/*'
+const assetFiles = glob.sync(assetsGlob, { dot: true })
+
+for (const file of assetFiles) {
+  const destPath = path.resolve('dist', file)
+  fs.mkdirSync(path.dirname(destPath), { recursive: true })
+  fs.copyFileSync(file, destPath)
+}
 
 // Run npm install in the dist folder
 execSync('npm install', {
