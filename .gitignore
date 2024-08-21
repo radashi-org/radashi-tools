@@ -1,5 +1,6 @@
 dist
 node_modules
 *.js
+!**/bin/radashi-helper.js
 *.vsix
 **/my-radashi
