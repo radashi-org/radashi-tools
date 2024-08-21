@@ -29,30 +29,18 @@ importers:
       esbuild:
         specifier: ^0.23.0
         version: 0.23.1
-      escalade:
-        specifier: ^3.1.2
-        version: 3.1.2
       execa:
         specifier: ^9.3.0
         version: 9.3.1
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
-      glob-regex:
-        specifier: ^0.3.2
-        version: 0.3.2
-      p-lazy:
-        specifier: ^4.0.0
-        version: 4.0.0
       parse-imports-exports:
         specifier: ^0.1.1
         version: 0.1.1
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
-      radashi:
-        specifier: 12.2.0-beta.af825f4
-        version: 12.2.0-beta.af825f4
     devDependencies:
       '@types/debug':
         specifier: ^4.1.12
@@ -63,9 +51,21 @@ importers:
       '@types/prompts':
         specifier: ^2.4.9
         version: 2.4.9
+      escalade:
+        specifier: ^3.1.2
+        version: 3.1.2
+      glob-regex:
+        specifier: ^0.3.2
+        version: 0.3.2
       kleur:
         specifier: ^4.1.5
         version: 4.1.5
+      p-lazy:
+        specifier: ^4.0.0
+        version: 4.0.0
+      radashi:
+        specifier: 12.2.0-beta.af825f4
+        version: 12.2.0-beta.af825f4
       string-argv:
         specifier: ^0.3.2
         version: 0.3.2
@@ -96,9 +96,9 @@ importers:
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
-      p-memoize:
-        specifier: ^7.1.1
-        version: 7.1.1
+      radashi-helper:
+        specifier: workspace:^
+        version: link:../radashi-helper
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -115,12 +115,12 @@ importers:
       esbuild:
         specifier: ^0.23.0
         version: 0.23.1
+      p-memoize:
+        specifier: ^7.1.1
+        version: 7.1.1
       radashi:
         specifier: 12.2.0-beta.af825f4
         version: 12.2.0-beta.af825f4
-      radashi-helper:
-        specifier: workspace:^
-        version: link:../radashi-helper
       tsup:
         specifier: ^8.1.2
         version: 8.2.4(jiti@1.21.6)(postcss@8.4.41)(tsx@4.17.0)(typescript@5.5.4)(yaml@2.5.0)
