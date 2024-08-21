@@ -64,10 +64,27 @@ Copy the files for an existing function into your project's `overrides` folder.
 
 The `query` is a partial function name. If there's a tie for best match or no query is provided, you will be prompted to pick the function you want.
 
+```sh
+# Interactive mode
+pnpm radashi fn override
+
+# Copy the files for "number/sum" into your project
+pnpm radashi fn override number/sum
+```
+
 ### `radashi pr import <pr-id>`
 
 Copy the files for a Radashi “pull request” into your project.
 
-The `pr-id` must be a valid PR ID in the `radashi-org/radashi` repository. See the [pull requests page](https://github.com/radashi-org/radashi/pulls) to find one.
+```sh
+# Import all changes from a PR
+pnpm radashi pr import 208
+```
 
-Note: [GitHub CLI](https://cli.github.com) must be installed for this command.
+**Notes**
+
+- [GitHub CLI](https://cli.github.com) must be installed for this command.
+- The `pr-id` must be a valid PR ID in the `radashi-org/radashi` repository. See the [pull requests page](https://github.com/radashi-org/radashi/pulls) to find one.
+- The PR will be automatically committed to your Radashi.
+- If the PR title doesn't follow the Conventional Commits format, you will be prompted to provide a commit message.
+- There's no need to run `pnpm build` after importing a PR, as this command will do it for you.
