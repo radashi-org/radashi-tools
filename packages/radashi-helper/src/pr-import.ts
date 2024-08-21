@@ -46,7 +46,7 @@ export async function importPullRequest(
     )
   }
 
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
 
   await assertRepoClean(env.root)
   await pullRadashi(env)

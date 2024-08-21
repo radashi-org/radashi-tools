@@ -1,3 +1,5 @@
+import type { Env } from '../env'
+
 export interface CommonOptions {
   /**
    * The directory to run the command in.
@@ -6,4 +8,8 @@ export interface CommonOptions {
    * `radashi` folder, starting from the current directory.
    */
   dir?: string
+  /**
+   * @internal
+   */
+  env?: Env
 }

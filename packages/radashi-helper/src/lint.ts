@@ -9,7 +9,7 @@ import { log } from './util/log'
 import { stdio } from './util/stdio'
 
 export async function lint(files: string[], options: CommonOptions) {
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
 
   const binFiles = glob.sync('*', {
     cwd: join(env.root, 'node_modules/.bin'),

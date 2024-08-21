@@ -32,7 +32,7 @@ export interface MoveFunctionOptions extends CommonOptions {
 }
 
 export async function moveFunction(options: MoveFunctionOptions = {}) {
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
 
   let oldFuncPath = options.funcPath
   const dest = options.dest

@@ -14,7 +14,7 @@ export interface BuildOptions extends CommonOptions {
 }
 
 export default async function (options: BuildOptions = {}) {
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
   const { root, config } = env
 
   const outDir = resolve(options.outDir ?? env.outDir)

@@ -5,7 +5,7 @@ import { getEnv } from './env'
 import { stdio } from './util/stdio'
 
 export async function format(filter: string[], options: CommonOptions) {
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
 
   // 1. Remember if the user has uncommitted changes (ignoring untracked files).
   const { stdout: uncommittedChanges } = await execa(

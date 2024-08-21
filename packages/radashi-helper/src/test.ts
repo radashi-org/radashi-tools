@@ -7,7 +7,7 @@ import { stdio } from './util/stdio'
 
 export async function startTestRunner(
   globs: string[],
-  { dir, ...flags }: Record<string, any> & CommonOptions,
+  { dir, env, ...flags }: Record<string, any> & CommonOptions,
 ) {
   const files = await glob(
     globs.map(glob => `src/**/${glob}*`),
@@ -23,7 +23,8 @@ export async function startTestRunner(
     extraArgs.push('--coverage.include', files[0])
   }
 
-  const env = getEnv(dir)
+  env ??= getEnv(dir)
+
   const args = [
     '-s',
     'vitest',

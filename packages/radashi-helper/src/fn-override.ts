@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path'
 import { defer } from 'radashi'
 import { botCommit } from './bot'
 import type { CommonOptions } from './cli/options'
-import { type Env, getEnv } from './env'
+import { getEnv } from './env'
 import { rewireDependents } from './rewired/rewireDependents'
 import { assertRepoClean } from './util/assertRepoClean'
 import { cwdRelative } from './util/cwdRelative'
@@ -24,7 +24,6 @@ export interface AddOverrideOptions extends CommonOptions {
    * @default true
    */
   editor?: string | false
-  env?: Env
   exactMatch?: boolean
   fromBranch?: string
 }

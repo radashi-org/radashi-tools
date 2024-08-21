@@ -47,7 +47,7 @@ export async function createFunction(
     throw new RadashiError('Function name cannot include slashes')
   }
 
-  const env = getEnv(options.dir)
+  const env = options.env ?? getEnv(options.dir)
   await pullRadashi(env)
 
   let { group, description } = options
