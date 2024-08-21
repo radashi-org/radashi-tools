@@ -2,6 +2,10 @@
   "private": true,
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@radashi-org/biome-config": "^1.0.1"
+    "@radashi-org/biome-config": "^1.0.1",
+    "@types/node": "^22.5.0",
+    "radashi": "12.2.0-beta.af825f4",
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.4"
   }
 }

@@ -37,23 +37,19 @@
     "esbuild": "^0.23.0",
     "execa": "^9.3.0",
     "fast-glob": "^3.3.2",
-    "parse-imports-exports": "^0.1.1",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
-    "@types/node": "^20.16.0",
     "@types/prompts": "^2.4.9",
     "escalade": "^3.1.2",
     "glob-regex": "^0.3.2",
     "kleur": "^4.1.5",
     "p-lazy": "^4.0.0",
-    "radashi": "12.2.0-beta.af825f4",
+    "parse-imports-exports": "^0.1.1",
     "string-argv": "^0.3.2",
     "strip-ansi": "^7.1.0",
-    "tsup": "^8.1.2",
     "type-fest": "^4.22.0",
-    "typescript": "^5.5.3",
     "vite": "^5.3.4",
     "vitest": "^2.0.5"
   }
