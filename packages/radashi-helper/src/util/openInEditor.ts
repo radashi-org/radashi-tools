@@ -3,6 +3,7 @@ import { proxied } from 'radashi'
 import type { Env } from '../env'
 import { EarlyExitError } from './error'
 import { prompt } from './prompt'
+import { stdio } from './stdio'
 import { updateRadashiConfig } from './updateRadashiConfig'
 
 let forcedEditor: string | undefined
@@ -120,7 +121,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
 
   if (editor) {
     try {
-      await execa(editor, [file])
+      await execa(editor, [file], { stdio })
     } catch (error) {
       console.error(`Failed to open file with ${editor}:`, error)
     }
