@@ -1,11 +1,14 @@
 import glob from 'fast-glob'
 import fs from 'node:fs'
 import path from 'node:path'
+import LazyPromise from 'p-lazy'
 import * as vscode from 'vscode'
+import { importRadashiHelper, type RadashiHelper } from './helper.js'
 
 export interface RadashiFolder {
   type: 'workspace' | 'package'
   path: string
+  helper: Promise<RadashiHelper>
 }
 
 export function getRadashiFolder(): RadashiFolder | undefined {
@@ -16,15 +19,17 @@ export function getRadashiFolder(): RadashiFolder | undefined {
     )
   }
 
-  const workspaceFolderPath = vscode.workspace.workspaceFolders?.find(
-    folder => {
-      const folderPath = folder.uri.fsPath
-      return isRadashiPath(folderPath)
-    },
-  )?.uri.fsPath
+  const workspaceFolder = vscode.workspace.workspaceFolders?.find(folder => {
+    const folderPath = folder.uri.fsPath
+    return isRadashiPath(folderPath)
+  })
 
-  if (workspaceFolderPath) {
-    return { type: 'workspace', path: workspaceFolderPath }
+  if (workspaceFolder) {
+    return {
+      type: 'workspace',
+      path: workspaceFolder.uri.fsPath,
+      helper: lazyImportRadashiHelper(workspaceFolder.uri.fsPath),
+    }
   }
 
   // Search for Radashi in all workspace folders
@@ -40,11 +45,22 @@ export function getRadashiFolder(): RadashiFolder | undefined {
         const folderPath = path.dirname(packageJsonPath)
 
         if (isRadashiPath(folderPath)) {
-          return { type: 'package', path: folderPath }
+          return {
+            type: 'package',
+            path: folderPath,
+            helper: lazyImportRadashiHelper(folderPath),
+          }
         }
       }
     }
   }
 
   return undefined
+}
+
+async function lazyImportRadashiHelper(root: string) {
+  return new LazyPromise<RadashiHelper>(resolve => {
+    const pkgPath = path.join(root, 'node_modules/radashi-helper')
+    resolve(importRadashiHelper(pkgPath))
+  })
 }

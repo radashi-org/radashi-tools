@@ -1,6 +1,5 @@
 import * as vscode from 'vscode'
 import { getRadashiFolder } from './util/getRadashiFolder.js'
-import { importRadashiHelper } from './util/helper.js'
 
 export function activate(context: vscode.ExtensionContext) {
   function activate() {
@@ -39,17 +38,17 @@ export function activate(context: vscode.ExtensionContext) {
     if (radashiFolder) {
       context.subscriptions.push(
         vscode.commands.registerCommand('radashi.createFunction', async () => {
-          const helper = await importRadashiHelper()
+          const helper = await radashiFolder.helper
           await helper.run(['fn', 'create', '--dir', radashiFolder.path])
         }),
         vscode.commands.registerCommand('radashi.moveFunction', async () => {
-          const helper = await importRadashiHelper()
+          const helper = await radashiFolder.helper
           await helper.run(['fn', 'move', '--dir', radashiFolder.path])
         }),
         vscode.commands.registerCommand(
           'radashi.overrideFunction',
           async () => {
-            const helper = await importRadashiHelper()
+            const helper = await radashiFolder.helper
             await helper.run(['fn', 'override', '--dir', radashiFolder.path])
           },
         ),
@@ -67,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
           if (!prNumber) {
             return // User cancelled the input
           }
-          const helper = await importRadashiHelper()
+          const helper = await radashiFolder.helper
           await helper.run([
             'pr',
             'import',

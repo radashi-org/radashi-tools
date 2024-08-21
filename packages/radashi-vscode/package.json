@@ -80,13 +80,14 @@
   "devDependencies": {
     "@types/vscode": "^1.75.0",
     "@vscode/vsce": "^2.31.1",
-    "p-memoize": "^7.1.1"
+    "p-lazy": "^4.0.0",
+    "p-memoize": "^7.1.1",
+    "radashi-helper": "workspace:^"
   },
   "dependencies": {
     "algoliasearch": "4.24.0",
     "execa": "9.3.1",
     "fast-glob": "3.3.2",
-    "radashi-helper": "workspace:^",
     "yaml": "2.5.0"
   }
 }

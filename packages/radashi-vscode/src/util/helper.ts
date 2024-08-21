@@ -4,8 +4,10 @@ import { isString } from 'radashi'
 import * as vscode from 'vscode'
 import { outputChannel } from './outputChannel.js'
 
-export const importRadashiHelper = pmemo(async () => {
-  const helper = await import('radashi-helper')
+export type RadashiHelper = Awaited<ReturnType<typeof importRadashiHelper>>
+
+export const importRadashiHelper = pmemo(async (pkgPath: string) => {
+  const helper: typeof import('radashi-helper') = await import(pkgPath)
   const { run, RadashiError, EarlyExitError } = helper
 
   helper.setPromptHandler(async options => {
