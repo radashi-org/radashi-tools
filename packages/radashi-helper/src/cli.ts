@@ -29,6 +29,11 @@ app.command('fn [subcommand]', 'Manage your functions').action(async () => {
     .option('-d, --description', 'Set the description for the new function')
     .option('-g, --group', 'Set the group for the new function')
     .action(async (name: string, flags) => {
+      if (name.includes('/')) {
+        const parts = name.split('/')
+        flags.group = parts[0]
+        name = parts[1]
+      }
       const { createFunction } = await import('./fn-create')
       await createFunction(name, flags)
     })
