@@ -39,6 +39,8 @@ app.command('fn [subcommand]', 'Manage your functions').action(async () => {
     })
 
   fn.command('move [funcPath] [dest]', 'Rename a function‘s files')
+    .alias('rename')
+    .alias('mv')
     .example(
       bin =>
         dedent`
