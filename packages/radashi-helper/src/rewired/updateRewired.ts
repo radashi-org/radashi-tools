@@ -1,6 +1,6 @@
 import { copyFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { Env } from '../env'
+import type { Env } from '../env'
 import { rewire } from '../rewired/rewire'
 import { debug } from '../util/debug'
 import { loadRewired } from './loadRewired'

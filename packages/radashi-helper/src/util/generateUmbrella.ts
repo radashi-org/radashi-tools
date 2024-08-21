@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { flat } from 'radashi'
-import { Env } from '../env'
+import type { Env } from '../env'
 import { updateRewired } from '../rewired/updateRewired'
 import { dedent } from './dedent'
 import { findSources } from './findSources'

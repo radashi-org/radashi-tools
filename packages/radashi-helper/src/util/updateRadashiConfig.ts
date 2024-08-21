@@ -1,6 +1,6 @@
-import { readFileSync } from 'fs'
-import { writeFile } from 'fs/promises'
-import { Config, Env } from '../env'
+import { readFileSync } from 'node:fs'
+import { writeFile } from 'node:fs/promises'
+import type { Config, Env } from '../env'
 
 export async function updateRadashiConfig(
   env: Env,

@@ -1,7 +1,7 @@
 import glob from 'fast-glob'
 import { join } from 'node:path'
 import { select } from 'radashi'
-import { Env } from '../env'
+import type { Env } from '../env'
 
 /**
  * Get the function paths (e.g. `"array/select"`) from the upstream

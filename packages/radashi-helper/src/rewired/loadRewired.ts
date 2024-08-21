@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { Env } from '../env'
+import type { Env } from '../env'
 
 export async function loadRewired(env: Env) {
   const rewiredFile = join(env.overrideDir, 'rewired.json')

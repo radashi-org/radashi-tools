@@ -22,13 +22,8 @@
       "default": "./dist/vitest/plugin.js"
     }
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "radashi",
-    "cli"
-  ],
+  "files": ["dist"],
+  "keywords": ["radashi", "cli"],
   "scripts": {
     "build": "tsup-node --clean",
     "dev": "tsup-node --clean --watch --sourcemap",
