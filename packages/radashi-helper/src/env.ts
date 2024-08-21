@@ -1,9 +1,11 @@
 import escalade from 'escalade/sync'
 import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import LazyPromise from 'p-lazy'
+import { isString } from 'radashi'
 import type { PackageJson } from 'type-fest'
 import { getInstalledRadashiRef } from './util/cloneRadashi'
+import { RadashiError } from './util/error'
 import { log } from './util/log'
 
 // These config options don't have default values.
@@ -49,12 +51,16 @@ export interface Env {
 }
 
 export function getEnv(root?: string | void): Env {
-  root ??= escalade(process.cwd(), (dir, files) => {
-    return (dir.includes('radashi') || files.includes('radashi.json')) && dir
-  })
+  root = root
+    ? resolve(root)
+    : escalade(
+        process.cwd(),
+        (dir, files) =>
+          (dir.includes('radashi') || files.includes('radashi.json')) && dir,
+      )
 
-  if (typeof root !== 'string') {
-    throw Error('No package.json found in current directory or its parents')
+  if (!isString(root)) {
+    throw new RadashiError('Could not find your Radashi root directory')
   }
 
   const pkg = JSON.parse(
