@@ -19,5 +19,9 @@
     "editor.defaultFormatter": "biomejs.biome",
     "rewrap.wrappingColumn": 70
   },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "rewrap.wrappingColumn": 70
+  },
   "vitest.rootConfig": "packages/radashi-helper/vitest.config.ts"
 }

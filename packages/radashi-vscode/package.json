@@ -13,7 +13,6 @@
     "url": "https://github.com/radashi-org/radashi-vscode"
   },
   "type": "module",
-  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -90,7 +89,8 @@
     "vscode:prepublish": "npm run build",
     "build": "tsup --clean",
     "dev": "tsup --clean --watch --sourcemap",
-    "package": "vsce package"
+    "prepackage": "node scripts/pre-package.mjs",
+    "package": "cd dist && vsce package"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -107,6 +107,6 @@
   "dependencies": {
     "execa": "^9.3.0",
     "fast-glob": "^3.3.2",
-    "radashi-helper": "workspace:^"
+    "radashi-helper": "^0.1.0"
   }
 }

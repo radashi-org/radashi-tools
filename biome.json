@@ -1,6 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "extends": ["@radashi-org/biome-config"],
+  "files": {
+    "include": ["**/*.mjs"]
+  },
   "linter": {
     "rules": {
       "performance": {
