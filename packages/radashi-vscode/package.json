@@ -105,8 +105,8 @@
     "yaml": "^2.5.0"
   },
   "dependencies": {
-    "execa": "^9.3.0",
-    "fast-glob": "^3.3.2",
+    "execa": "9.3.1",
+    "fast-glob": "3.3.2",
     "radashi-helper": "^0.1.0"
   }
 }

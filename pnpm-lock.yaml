@@ -91,14 +91,14 @@ importers:
   packages/radashi-vscode:
     dependencies:
       execa:
-        specifier: ^9.3.0
-        version: 9.3.1
+        specifier: 9.3.0
+        version: 9.3.0
       fast-glob:
-        specifier: ^3.3.2
+        specifier: 3.3.2
         version: 3.3.2
       radashi-helper:
-        specifier: workspace:^
-        version: link:../radashi-helper
+        specifier: ^0.1.0
+        version: 0.1.0
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -1097,6 +1097,10 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
+  execa@9.3.0:
+    resolution: {integrity: sha512-l6JFbqnHEadBoVAVpN5dl2yCyfX28WoBAGaoQcNmLLSedOxTxcn2Qa83s8I/PA5i56vWru2OHOtrwF7Om2vqlg==}
+    engines: {node: ^18.19.0 || >=20.5.0}
+
   execa@9.3.1:
     resolution: {integrity: sha512-gdhefCCNy/8tpH/2+ajP9IQc14vXchNdd0weyzSJEFURhRMGncQ+zKFxwjAufIewPEJm9BPOaJnvg2UtlH2gPQ==}
     engines: {node: ^18.19.0 || >=20.5.0}
@@ -1233,6 +1237,10 @@ packages:
   human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
+
+  human-signals@7.0.0:
+    resolution: {integrity: sha512-74kytxOUSvNbjrT9KisAbaTZ/eJwD/LrbM/kh5j0IhPuJzwuA19dWvniFGwBzN9rVjg+O/e+F310PjObDXS+9Q==}
+    engines: {node: '>=18.18.0'}
 
   human-signals@8.0.0:
     resolution: {integrity: sha512-/1/GPCpDUCCYwlERiYjxoczfP0zfvZMU/OWgQPMya9AbAE24vseigFdhAMObpc8Q4lc/kjutPfUddDYyAmejnA==}
@@ -1654,6 +1662,10 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  radashi-helper@0.1.0:
+    resolution: {integrity: sha512-Pr6iapebF8P2uuhQOGjxssrXS59dDRY2e7BLUEcngPFPPfMeaqU278hrBPCAHU58WwURyW1Mu0Kd+9jegeOqXw==}
+    hasBin: true
 
   radashi@12.2.0-beta.af825f4:
     resolution: {integrity: sha512-qgHft4yu2ZPoHGEYEfqfsq1NMGoPq2Eo/r3QkbrJimNJ+63m8sDgISsQnTFjayC3pRCBr+FO2YIsORPs8pIiJA==}
@@ -3016,6 +3028,21 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
+  execa@9.3.0:
+    dependencies:
+      '@sindresorhus/merge-streams': 4.0.0
+      cross-spawn: 7.0.3
+      figures: 6.1.0
+      get-stream: 9.0.1
+      human-signals: 7.0.0
+      is-plain-obj: 4.1.0
+      is-stream: 4.0.1
+      npm-run-path: 5.3.0
+      pretty-ms: 9.1.0
+      signal-exit: 4.1.0
+      strip-final-newline: 4.0.0
+      yoctocolors: 2.1.1
+
   execa@9.3.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
@@ -3185,6 +3212,8 @@ snapshots:
   human-signals@2.1.0: {}
 
   human-signals@5.0.0: {}
+
+  human-signals@7.0.0: {}
 
   human-signals@8.0.0: {}
 
@@ -3562,6 +3591,19 @@ snapshots:
       side-channel: 1.0.6
 
   queue-microtask@1.2.3: {}
+
+  radashi-helper@0.1.0:
+    dependencies:
+      '@babel/parser': 7.25.3
+      cac: 6.7.14
+      debug: 4.3.6
+      esbuild: 0.23.1
+      execa: 9.3.0
+      fast-glob: 3.3.2
+      parse-imports-exports: 0.1.1
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - supports-color
 
   radashi@12.2.0-beta.af825f4: {}
 
