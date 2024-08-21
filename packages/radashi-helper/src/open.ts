@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { sift } from 'radashi'
+import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
 import { cwdRelative } from './util/cwdRelative'
 import { findSources } from './util/findSources'
@@ -9,7 +10,7 @@ import { openInEditor } from './util/openInEditor'
 import { projectFolders } from './util/projectFolders'
 import { queryFuncs } from './util/queryFuncs'
 
-interface Flags {
+export interface OpenFunctionOptions extends CommonOptions {
   source?: boolean
   test?: boolean
   typeTest?: boolean
@@ -18,8 +19,11 @@ interface Flags {
   all?: boolean
 }
 
-export async function openFunction(query = '', flags: Flags = {}) {
-  const env = getEnv()
+export async function openFunction(
+  query = '',
+  options: OpenFunctionOptions = {},
+) {
+  const env = options.env ?? getEnv()
 
   const sources = await findSources(env, ['src', 'overrides'])
   const { funcPath } = await queryFuncs(
@@ -32,15 +36,15 @@ export async function openFunction(query = '', flags: Flags = {}) {
     ),
   )
 
-  const targetFolders = flags.all
+  const targetFolders = options.all
     ? projectFolders
     : projectFolders.filter(f => {
         return (
-          (flags.source && f.name === 'src') ||
-          (flags.test && f.extension === '.test.ts') ||
-          (flags.typeTest && f.extension === '.test-d.ts') ||
-          (flags.benchmark && f.name === 'benchmarks') ||
-          (flags.docs && f.name === 'docs')
+          (options.source && f.name === 'src') ||
+          (options.test && f.extension === '.test.ts') ||
+          (options.typeTest && f.extension === '.test-d.ts') ||
+          (options.benchmark && f.name === 'benchmarks') ||
+          (options.docs && f.name === 'docs')
         )
       })
 
