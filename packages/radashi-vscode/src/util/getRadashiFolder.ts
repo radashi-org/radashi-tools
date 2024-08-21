@@ -1,4 +1,3 @@
-import glob from 'fast-glob'
 import fs from 'node:fs'
 import path from 'node:path'
 import LazyPromise from 'p-lazy'
@@ -11,7 +10,7 @@ export interface RadashiFolder {
   helper: Promise<RadashiHelper>
 }
 
-export function getRadashiFolder(): RadashiFolder | undefined {
+export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
   const isRadashiPath = (folderPath: string) => {
     return (
       path.basename(folderPath) === 'radashi' ||
@@ -35,21 +34,19 @@ export function getRadashiFolder(): RadashiFolder | undefined {
   // Search for Radashi in all workspace folders
   const workspaceFolders = vscode.workspace.workspaceFolders
   if (workspaceFolders) {
-    for (const folder of workspaceFolders) {
-      const folderPath = folder.uri.fsPath
-      const packageJsonPaths = glob.sync('**/package.json', {
-        cwd: folderPath,
-      })
+    const packageJsonUris = await vscode.workspace.findFiles(
+      '**/package.json',
+      '**/node_modules/**',
+    )
 
-      for (const packageJsonPath of packageJsonPaths) {
-        const folderPath = path.dirname(packageJsonPath)
+    for (const packageJsonUri of packageJsonUris) {
+      const folderPath = path.dirname(packageJsonUri.fsPath)
 
-        if (isRadashiPath(folderPath)) {
-          return {
-            type: 'package',
-            path: folderPath,
-            helper: lazyImportRadashiHelper(folderPath),
-          }
+      if (isRadashiPath(folderPath)) {
+        return {
+          type: 'package',
+          path: folderPath,
+          helper: lazyImportRadashiHelper(folderPath),
         }
       }
     }

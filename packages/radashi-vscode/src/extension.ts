@@ -1,9 +1,9 @@
 import * as vscode from 'vscode'
 import { getRadashiFolder } from './util/getRadashiFolder.js'
 
-export function activate(context: vscode.ExtensionContext) {
-  function activate() {
-    const radashiFolder = getRadashiFolder()
+export async function activate(context: vscode.ExtensionContext) {
+  async function activate() {
+    const radashiFolder = await getRadashiFolder()
 
     const open = (url: string) => {
       vscode.env.openExternal(vscode.Uri.parse(url))
