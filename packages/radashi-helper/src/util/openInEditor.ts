@@ -1,8 +1,8 @@
 import { execa } from 'execa'
 import { proxied } from 'radashi'
 import type { Env } from '../env'
-import { EarlyExitError } from './error'
-import { prompt } from './prompt'
+import { EarlyExitError, forwardStderrAndRethrow } from './error'
+import { prompt, type PromptChoice } from './prompt'
 import { stdio } from './stdio'
 import { updateRadashiConfig } from './updateRadashiConfig'
 
@@ -40,20 +40,9 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
       return cmd
     })
 
-    const editorOptions = []
-
-    if (env.config.editor) {
-      editorOptions.push({
-        title: `Open with ${displayNames[env.config.editor]}`,
-        value: env.config.editor,
-      })
-      editorOptions.push({
-        title: `Always open with ${displayNames[env.config.editor]}`,
-        value: '!' + env.config.editor,
-      })
-    } else {
+    const addAvailableEditors = async (choices: PromptChoice<string>[]) => {
       if (process.env.EDITOR) {
-        editorOptions.push({
+        choices.push({
           title: `Open with $EDITOR (${process.env.EDITOR})`,
           value: '$EDITOR',
         })
@@ -70,7 +59,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
       ]) {
         try {
           await execa('command', ['-v', editor])
-          editorOptions.push({
+          choices.push({
             title: `Open with ${displayNames[editor]}`,
             value: editor,
           })
@@ -79,52 +68,77 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
         }
       }
 
-      editorOptions.push({
+      choices.push({
         title: 'Open with custom command',
         value: 'custom',
       })
     }
 
-    const response = await prompt({
-      type: 'autocomplete',
-      name: 'response',
-      message: 'How would you like to open the file?',
-      choices: editorOptions,
-    })
-    if (!response) {
-      throw new EarlyExitError('No editor selected. Exiting...')
-    }
+    while (true) {
+      const choices: PromptChoice<string>[] = []
 
-    if (response === 'custom') {
-      const customCommand = await prompt({
-        type: 'text',
-        name: 'customCommand',
-        message: 'Enter the command to open the file:',
-      })
-      if (!customCommand) {
-        throw new EarlyExitError('No command provided. Exiting...')
+      if (env.config.editor) {
+        choices.push({
+          title: `Open with ${displayNames[env.config.editor]}`,
+          value: env.config.editor,
+        })
+        choices.push({
+          title: `Always open with ${displayNames[env.config.editor]}`,
+          value: '!' + env.config.editor,
+        })
+        choices.push({
+          title: 'Select another editor',
+          value: 'other',
+        })
+      } else {
+        await addAvailableEditors(choices)
       }
-      editor = customCommand
-    } else if (response[0] === '!') {
-      editor = response.slice(1)
-    } else if (response === '$EDITOR') {
-      editor = process.env.EDITOR!
-    } else {
-      editor = response
-    }
 
-    forcedEditor = editor
-    await updateRadashiConfig(env, {
-      editor: response === 'custom' ? editor : response,
-    })
+      const response = await prompt({
+        type: 'autocomplete',
+        name: 'response',
+        message: 'How would you like to open the file?',
+        choices: choices,
+      })
+      if (!response) {
+        throw new EarlyExitError('No editor selected. Exiting...')
+      }
+
+      if (response === 'other') {
+        env.config.editor = undefined
+        await addAvailableEditors(choices)
+        continue
+      }
+
+      if (response === 'custom') {
+        const customCommand = await prompt({
+          type: 'text',
+          name: 'customCommand',
+          message: 'Enter the command to open the file:',
+        })
+        if (!customCommand) {
+          throw new EarlyExitError('No command provided. Exiting...')
+        }
+        editor = customCommand
+      } else if (response[0] === '!') {
+        editor = response.slice(1)
+      } else if (response === '$EDITOR') {
+        editor = process.env.EDITOR!
+      } else {
+        editor = response
+      }
+
+      forcedEditor = editor
+      await updateRadashiConfig(env, {
+        editor: response === 'custom' ? editor : response,
+      })
+
+      break
+    }
   }
 
   if (editor) {
-    try {
-      await execa(editor, [file], { stdio })
-    } catch (error) {
-      console.error(`Failed to open file with ${editor}:`, error)
-    }
+    await execa(editor, [file], { stdio }).catch(forwardStderrAndRethrow)
   }
 }
 

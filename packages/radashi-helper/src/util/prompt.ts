@@ -4,9 +4,15 @@ export interface PromptOptions<Type extends PromptType, Value> {
   type: Type
   name: string
   message: string
-  choices?: { title: string; value: Value; description?: string }[]
+  choices?: PromptChoice<Value>[]
   initial?: PromptResult<Type, Value>
   validate?: (value: PromptResult<Type, Value>) => string | true
+}
+
+export interface PromptChoice<Value> {
+  title: string
+  value: Value
+  description?: string
 }
 
 export type PromptResult<
