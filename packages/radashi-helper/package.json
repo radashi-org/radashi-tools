@@ -6,7 +6,7 @@
   "author": "Alec Larson",
   "license": "MIT",
   "bin": {
-    "radashi": "./bin/radashi-helper.js"
+    "radashi": "bin/radashi-helper.js"
   },
   "exports": {
     ".": {
