@@ -56,15 +56,6 @@ export async function help() {
       The \`override\` command will commit the files it just copied for you, so you can easily revert the override if ever necessary.
     `,
     dedent`
-      If you want to contribute back to Radashi, we've added a command to get that done in a flash.
-
-          ${cyan('pnpm pr create')}
-
-      Run this command from any branch except \`main\`. The changes in your current local branch will be compared against the \`main\` branch, and a PR will be created for you.
-
-      If you made a ${bold('BREAKING CHANGE')}, include the ${bold('-b')} flag. Your PR will be set to target the "next" branch of Radashi upstream.
-    `,
-    dedent`
       If you see a PR on Radashi's Github that you'd like in your Radashi, we have a command that will copy in its changes hassle-free. All you need is the PR number!
 
           ${cyan('pnpm pr import 123')}

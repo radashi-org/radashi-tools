@@ -79,20 +79,6 @@ app
       'Set the directory where your Radashi is located',
     )
 
-    // TODO: finish this feature
-    // pr.command(
-    //   'create',
-    //   'Create a radashi-org/radashi pull request from your current branch',
-    // )
-    //   .option(
-    //     '-b, --breaking-change',
-    //     'Target the "next" branch instead of main',
-    //   )
-    //   .action(async flags => {
-    //     const { createPullRequest } = await import('./pr-create')
-    //     await createPullRequest(flags)
-    //   })
-
     pr.command(
       'import <number>',
       'Copy files from a radashi-org/radashi pull request into your fork',
@@ -102,15 +88,6 @@ app
     })
 
     await execute(pr, app.rawArgs.slice(1))
-  })
-
-app
-  .command('shipit', 'Publish your Radashi to NPM')
-  .option('-n, --dry-run', 'Do not publish to NPM')
-  .option('--debug', 'Ignore certain safety checks (implies --dry-run)')
-  .action(async flags => {
-    const { shipIt } = await import('./shipit')
-    await shipIt(flags)
   })
 
 app
