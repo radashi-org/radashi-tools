@@ -15,15 +15,15 @@ export async function help() {
     dedent`
       First, let's learn how this CLI can help you add a new function to your Radashi.
 
-          ${cyan('pnpm fn add helloWorld')}
+          ${cyan('pnpm fn create foo/bar')}
 
       Run that command in another terminal. It creates the following files:
 
-          src/helloWorld.ts
-          tests/helloWorld.test.ts
-          benchmarks/helloWorld.bench.ts
-          docs/helloWorld.mdx
-      
+          src/foo/bar.ts
+          tests/foo/bar.test.ts
+          benchmarks/foo/bar.bench.ts
+          docs/foo/bar.mdx
+
       Remember, you can always undo it with \`git clean -df\` (but take care to not run that before stashing or committing any other unrelated changes).
     `,
     dedent`
@@ -42,18 +42,18 @@ export async function help() {
     dedent`
       Let's say you want to extend or fix an existing Radashi function. We made it as simple as running a command. The original code is copied from Radashi upstream, and you're free to edit it as you like.
 
-          ${cyan('pnpm override isArray')}
+          ${cyan('pnpm fn override debounce')}
 
       Run that command in another terminal. It creates the following files:
 
-          overrides/src/isArray.ts
-          overrides/tests/isArray.test.ts
-          overrides/benchmarks/isArray.bench.ts
-          overrides/docs/isArray.mdx
+          overrides/src/curry/debounce.ts
+          overrides/tests/curry/debounce.test.ts
+          overrides/benchmarks/curry/debounce.bench.ts
+          overrides/docs/curry/debounce.mdx
 
       If you run ${cyan('`ls overrides/rewired`')} after, you'll see a bunch of other files were added. If you ever copy a function that other Radashi functions depend on, those dependent functions need to be “re-wired” so that they point to your override. The dependent functions are copied into your Radashi, but they won't be committed so they can be updated on every build (to keep them in sync with the upstream Radashi).
 
-      The \`override\` command will commit the files it just copied for you, so you can easily revert the override if ever necessary.
+      The \`fn override\` command will commit the files it just copied for you, so you can easily revert the override if ever necessary.
     `,
     dedent`
       If you see a PR on Radashi's Github that you'd like in your Radashi, we have a command that will copy in its changes hassle-free. All you need is the PR number!
