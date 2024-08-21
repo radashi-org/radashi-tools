@@ -6,6 +6,7 @@ import { outputChannel } from './outputChannel.js'
 
 export const importRadashiHelper = pmemo(async () => {
   const helper = await import('radashi-helper')
+  const { run, RadashiError, EarlyExitError } = helper
 
   helper.setPromptHandler(async options => {
     switch (options.type) {
@@ -110,11 +111,22 @@ export const importRadashiHelper = pmemo(async () => {
 
   helper.setStdio(['ignore', stdout, stderr])
 
-  // Since we're not using process.argv, we need a placeholder for the
-  // first two args: the node binary and the script path. These are
-  // not used by the CLI, so we can pass empty strings.
-  const { run } = helper
-  helper.run = (argv: string[]) => run(['', '', ...argv])
+  helper.run = (argv: string[]) =>
+    // Since we're not using process.argv, we need a placeholder for
+    // the first two args: the node binary and the script path. These
+    // are required by CAC (our CLI framework) but not the CLI itself,
+    // so we can pass empty strings.
+    run(['', '', ...argv]).catch(error => {
+      // Errors are never rethrown, but either logged to the output
+      // channel or shown as a message to the user.
+      if (error instanceof EarlyExitError) {
+        outputChannel.appendLine('[stdout] ' + error.message)
+      } else if (error instanceof RadashiError) {
+        vscode.window.showErrorMessage(error.message)
+      } else {
+        outputChannel.appendLine(error.stack.replace(/^/gm, '[stderr] '))
+      }
+    })
 
   return helper
 })
