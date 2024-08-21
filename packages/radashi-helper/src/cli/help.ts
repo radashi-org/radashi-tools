@@ -67,7 +67,7 @@ export async function help() {
     dedent`
       That's all for now! Please reach out on Github if you have any questions or feedback.
 
-      https://github.com/radashi-org/radashi-helper
+      https://github.com/radashi-org/radashi-vscode/issues
     `,
   ]
 
