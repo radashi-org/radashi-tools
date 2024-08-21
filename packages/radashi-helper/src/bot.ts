@@ -1,4 +1,5 @@
 import { execa } from 'execa'
+import { forwardStderrAndRethrow } from './util/error'
 import { stdio } from './util/stdio'
 
 const bot = {
@@ -10,7 +11,11 @@ export async function botCommit(
   message: string,
   opts: { cwd: string; add: string[] },
 ): Promise<void> {
-  await execa('git', ['add', ...opts.add], { cwd: opts.cwd, stdio })
+  if (opts.add.length > 0) {
+    await execa('git', ['add', ...opts.add], { cwd: opts.cwd }).catch(
+      forwardStderrAndRethrow,
+    )
+  }
   await execa(
     'git',
     ['commit', '-m', message, '--author', `${bot.name} <${bot.email}>`],
