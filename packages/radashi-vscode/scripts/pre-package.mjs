@@ -3,9 +3,29 @@ import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
+
+// Copy README.md to dist folder
+fs.copyFileSync('README.md', 'dist/README.md')
+
+// Copy LICENSE.md to dist folder
+fs.copyFileSync('../../LICENSE.md', 'dist/LICENSE.md')
+
+// Copy assets to dist folder
+for (const file of glob.sync('assets/**/*', {
+  ignore: ['**/node_modules/**'],
+})) {
+  const destPath = path.resolve('dist', file)
+  fs.mkdirSync(path.dirname(destPath), { recursive: true })
+  fs.copyFileSync(file, destPath)
+}
+
+const helperDir = path.resolve('../radashi-helper')
+const helperPackageJson = JSON.parse(
+  fs.readFileSync(path.join(helperDir, 'package.json'), 'utf8'),
+)
+
 // Read the package.json file
-const packageJsonPath = path.resolve('package.json')
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 packageJson.main = './extension.cjs'
 
 // Remove unnecessary fields
@@ -15,35 +35,10 @@ fieldsToRemove.forEach(field => {
 })
 
 // Write the modified package.json to the dist folder
-const distPackageJsonPath = path.resolve('dist', 'package.json')
-fs.writeFileSync(distPackageJsonPath, JSON.stringify(packageJson, null, 2))
-
-// Copy README.md to dist folder
-const readmePath = path.resolve('README.md')
-const distReadmePath = path.resolve('dist', 'README.md')
-fs.copyFileSync(readmePath, distReadmePath)
-
-// Copy LICENSE.md to dist folder
-const licensePath = path.resolve('../../LICENSE.md')
-const distLicensePath = path.resolve('dist', 'LICENSE.md')
-fs.copyFileSync(licensePath, distLicensePath)
-
-// Add .vscodeignore
-const ignored = ['node_modules']
-fs.writeFileSync(path.resolve('dist', '.vscodeignore'), ignored.join('\n'))
-
-// Copy assets to dist folder
-const assetsGlob = './assets/**/*'
-const assetFiles = glob.sync(assetsGlob, { dot: true })
-
-for (const file of assetFiles) {
-  const destPath = path.resolve('dist', file)
-  fs.mkdirSync(path.dirname(destPath), { recursive: true })
-  fs.copyFileSync(file, destPath)
-}
+fs.writeFileSync('dist/package.json', JSON.stringify(packageJson, null, 2))
 
 // Run npm install in the dist folder
-execSync('npm install', {
-  cwd: path.resolve('dist'),
+execSync('npm install --ignore-scripts', {
+  cwd: 'dist',
   stdio: 'inherit',
 })

@@ -70,10 +70,10 @@
     ]
   },
   "scripts": {
-    "build": "tsup --clean",
-    "prepackage": "pnpm -s build && node scripts/pre-package.mjs",
+    "build": "tsup",
+    "prepackage": "rimraf dist && pnpm -s build && node scripts/pre-package.mjs",
     "package": "cd dist && vsce package",
-    "prerelease": "pnpm -s build && node scripts/pre-package.mjs",
+    "prerelease": "rimraf dist && pnpm -s build && node scripts/pre-package.mjs",
     "release": "cd dist && vsce publish",
     "format": "biome check --fix --unsafe"
   },
@@ -82,7 +82,8 @@
     "@vscode/vsce": "^2.31.1",
     "p-lazy": "^4.0.0",
     "p-memoize": "^7.1.1",
-    "radashi-helper": "workspace:^"
+    "radashi-helper": "workspace:^",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "algoliasearch": "4.24.0",
