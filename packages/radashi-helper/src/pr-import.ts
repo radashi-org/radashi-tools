@@ -3,7 +3,7 @@ import globRegex from 'glob-regex'
 import { yellow } from 'kleur/colors'
 import { existsSync } from 'node:fs'
 import { copyFile, mkdir } from 'node:fs/promises'
-import { dirname, join, relative } from 'node:path'
+import { basename, dirname, extname, join, relative } from 'node:path'
 import { botCommit } from './bot'
 import type { CommonOptions } from './cli/options'
 import { type Env, getEnv } from './env'
@@ -24,9 +24,17 @@ import { log } from './util/log'
 import { prompt } from './util/prompt'
 import { pullRadashi } from './util/pullRadashi'
 
+export interface ImportPullRequestOptions extends CommonOptions {
+  /**
+   * Only import the specified file names, which should not include
+   * file extensions or folder names.
+   */
+  files?: string[]
+}
+
 export async function importPullRequest(
   prNumber: string,
-  options: CommonOptions,
+  options: ImportPullRequestOptions = {},
 ) {
   if (Number.isNaN(+prNumber)) {
     throw new RadashiError(`Invalid PR number "${prNumber}"`)
@@ -125,6 +133,11 @@ export async function importPullRequest(
   const modifiedFiles: string[] = []
 
   for (const change of changes) {
+    const file = basename(change.file, extname(change.file))
+    if (options.files && !options.files.includes(file)) {
+      continue
+    }
+
     if (change.status === 'A') {
       addedFiles.push(change.file)
 

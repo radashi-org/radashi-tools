@@ -89,10 +89,14 @@ app
     pr.command(
       'import <number>',
       'Copy files from a radashi-org/radashi pull request into your fork',
-    ).action(async (prNumber: string, flags) => {
-      const { importPullRequest } = await import('./pr-import')
-      await importPullRequest(prNumber, flags)
-    })
+    )
+      .option('-f, --files <files...>', 'Only import the specified files', {
+        type: [String],
+      })
+      .action(async (prNumber: string, flags) => {
+        const { importPullRequest } = await import('./pr-import')
+        await importPullRequest(prNumber, flags)
+      })
 
     await execute(pr, app.rawArgs.slice(1))
   })
