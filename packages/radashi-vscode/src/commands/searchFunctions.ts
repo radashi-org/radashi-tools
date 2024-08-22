@@ -2,11 +2,14 @@ import createAlgolia, { type SearchIndex } from 'algoliasearch'
 import glob from 'fast-glob'
 import fs from 'node:fs'
 import path from 'node:path'
-import { dash, debounce, sift } from 'radashi'
+import { inspect } from 'node:util'
+import { dash, debounce, sift, tryit } from 'radashi'
 import * as vscode from 'vscode'
 import yaml from 'yaml'
 import { dedent } from '../util/dedent.js'
 import type { RadashiFolder } from '../util/getRadashiFolder.js'
+import { memoAsync } from '../util/memoAsync.js'
+import { outputChannel } from '../util/outputChannel.js'
 import { formatRelativeElapsedTime } from '../util/time.js'
 
 interface FunctionInfo {
@@ -61,7 +64,11 @@ export async function searchFunctions(
         .replace(/\.ts$/, '.mdx')
         .replace(/(^|\/)src\//, '$1docs/')
 
-      const docs = fs.readFileSync(docsFile, 'utf8')
+      const docs = fs.readFileSync(
+        path.join(radashiFolder.path, docsFile),
+        'utf8',
+      )
+
       const metadata: {
         title?: string
         description?: string
@@ -80,39 +87,21 @@ export async function searchFunctions(
         },
         label: metadata.title ?? name,
         description: metadata.description ?? '',
+        alwaysShow: true,
       }
     })
   }
 
-  const localFunctionsPromise = loadLocalFunctions()
+  const localFunctionsPromise = loadLocalFunctions().catch(error => {
+    outputChannel.appendLine(
+      `🚫 Failed to load local functions: ${error.stack}`,
+    )
+    return []
+  })
 
-  const onInput = debounce({ delay: 400 }, async query => {
-    if (query.length > 0) {
-      const renderQuickPickItem = (fn: FunctionInfo): QuickPickItem => {
-        const elapsed = fn.committed_at
-          ? Date.now() - new Date(fn.committed_at).getTime()
-          : null
-
-        let detail =
-          fn.pr_number != null
-            ? `PR #${fn.pr_number}`
-            : fn.ref
-              ? `🏛️ Released`
-              : `🥨 Workspace`
-
-        if (elapsed) {
-          detail += ` (${formatRelativeElapsedTime(elapsed)})`
-        }
-
-        return {
-          fn,
-          label: fn.name,
-          description: fn.description,
-          detail,
-        }
-      }
-
-      const response = await algolia.multipleQueries<FunctionInfo>([
+  const algoliaSearch = memoAsync(
+    (query: string) =>
+      algolia.multipleQueries<FunctionInfo>([
         {
           indexName: 'merged_functions',
           query,
@@ -144,16 +133,71 @@ export async function searchFunctions(
             ],
           },
         },
-      ])
+      ]),
+    {
+      // Cache for 10 minutes
+      ttl: 10 * 60 * 1000,
+    },
+  )
 
-      quickPick.items = [
-        ...(await localFunctionsPromise),
-        ...sift(
-          response.results.flatMap((result): QuickPickItem[] =>
-            'hits' in result ? result.hits.map(renderQuickPickItem) : [],
-          ),
-        ),
-      ]
+  const onInput = debounce({ delay: 400 }, async query => {
+    if (query.length > 0) {
+      const renderQuickPickItem = (fn: FunctionInfo): QuickPickItem => {
+        const elapsed = fn.committed_at
+          ? Date.now() - new Date(fn.committed_at).getTime()
+          : null
+
+        let detail =
+          fn.pr_number != null
+            ? `PR #${fn.pr_number}`
+            : fn.ref
+              ? `🏛️ Released`
+              : `🥨 Workspace`
+
+        if (elapsed) {
+          detail += ` (${formatRelativeElapsedTime(elapsed)})`
+        }
+
+        return {
+          fn,
+          label: fn.name,
+          description: fn.description,
+          detail,
+          alwaysShow: true,
+        }
+      }
+
+      outputChannel.appendLine(`Searching for "${query}"...`)
+      const [error, response] = await tryit(algoliaSearch)(query)
+      const results = response
+        ? sift(
+            response.results.flatMap((result): QuickPickItem[] => {
+              if ('hits' in result) {
+                return result.hits.map(renderQuickPickItem)
+              }
+              outputChannel.appendLine(
+                `❌ No "hits" property in Algolia result: ${inspect(result, {
+                  depth: 10,
+                })}`,
+              )
+              return []
+            }),
+          )
+        : []
+
+      if (error) {
+        outputChannel.appendLine(
+          `🚫 Failed to search for "${query}": ${error.stack}`,
+        )
+      } else {
+        outputChannel.appendLine(inspect(response.results, { depth: 10 }))
+      }
+
+      const localResults = await localFunctionsPromise
+
+      quickPick.items = [...localResults, ...results]
+
+      outputChannel.appendLine(`✔️ Found ${quickPick.items.length} results`)
     } else {
       quickPick.items = []
     }
@@ -317,10 +361,7 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
 
   panel.webview.html =
     documentation +
-    fs.readFileSync(
-      path.join(__dirname, 'scripts', 'documentation.html'),
-      'utf8',
-    )
+    fs.readFileSync(path.join(__dirname, 'assets/documentation.html'), 'utf8')
 }
 
 async function viewPullRequest(fn: FunctionInfo) {
