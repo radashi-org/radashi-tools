@@ -5,19 +5,33 @@
   "description": "Help with managing your own Radashi",
   "author": "Alec Larson",
   "license": "MIT",
+  "main": "dist/cli.cjs",
+  "types": "dist/cli.d.cts",
   "bin": {
     "radashi": "bin/radashi-helper.js"
   },
   "exports": {
     ".": {
+      "require": {
+        "types": "./dist/cli.d.cts",
+        "default": "./dist/cli.cjs"
+      },
       "types": "./dist/cli.d.ts",
       "default": "./dist/cli.js"
     },
     "./esbuild": {
+      "require": {
+        "types": "./dist/esbuild/plugin.d.cts",
+        "default": "./dist/esbuild/plugin.cjs"
+      },
       "types": "./dist/esbuild/plugin.d.ts",
       "default": "./dist/esbuild/plugin.js"
     },
     "./vitest": {
+      "require": {
+        "types": "./dist/vitest/plugin.d.cts",
+        "default": "./dist/vitest/plugin.cjs"
+      },
       "types": "./dist/vitest/plugin.d.ts",
       "default": "./dist/vitest/plugin.js"
     }
