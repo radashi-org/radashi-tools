@@ -177,15 +177,15 @@ function generateDocsContent(funcName: string, description: string): string {
 function generateSrcContent(group: string, funcName: string): string {
   return dedent`
     /**
-      * Does a thing.
-      *
-      * @see https://radashi.js.org/reference/${group}/${funcName}
-      * @example
-      * \`\`\`ts
-      * ${funcName}()
-      * \`\`\`
-      */
-      export function ${funcName}(): void {}
+     * Does a thing.
+     *
+     * @see https://radashi.js.org/reference/${group}/${funcName}
+     * @example
+     * \`\`\`ts
+     * ${funcName}()
+     * \`\`\`
+     */
+    export function ${funcName}(): void {}
 
   `
 }
