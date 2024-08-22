@@ -172,7 +172,11 @@ export async function searchFunctions(
     const options = [Opt.ViewDocumentation, Opt.ViewFunctionSource]
 
     if (selected.fn.pr_number != null) {
-      options.push(Opt.GoToPullRequest, Opt.ImportIntoRadashi)
+      options.push(Opt.GoToPullRequest)
+
+      if (radashiFolder) {
+        options.push(Opt.ImportIntoRadashi)
+      }
     }
 
     const selectedOption = await vscode.window.showQuickPick(options, {
@@ -216,7 +220,7 @@ export async function searchFunctions(
         await viewPullRequest(selected.fn)
         break
       case Opt.ImportIntoRadashi:
-        await importFunction(selected.fn)
+        await importFunction(selected.fn, radashiFolder!)
         break
       case Opt.ViewFunctionSource:
         await viewFunctionSource(selected.fn)
@@ -326,11 +330,17 @@ async function viewPullRequest(fn: FunctionInfo) {
   }
 }
 
-async function importFunction(fn: FunctionInfo) {
-  console.log(`Importing ${fn.name} into Radashi`)
-  vscode.window.showInformationMessage(
-    `Importing ${fn.name} into Radashi (not implemented yet)`,
-  )
+async function importFunction(fn: FunctionInfo, radashiFolder: RadashiFolder) {
+  const helper = await radashiFolder.helper
+  await helper.run([
+    'pr',
+    'import',
+    String(fn.pr_number),
+    '--dir',
+    radashiFolder.path,
+    '--files',
+    fn.name,
+  ])
 }
 
 async function viewFunctionSource(fn: FunctionInfo) {
