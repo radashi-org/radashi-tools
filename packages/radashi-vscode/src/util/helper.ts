@@ -96,7 +96,7 @@ export const importRadashiHelper = pmemo(async (pkgPath: string) => {
             )
             .join(' ')
       }
-      msg = msg.replace(/^/gm, `[${prefix}] `)
+      msg = msg.replace(/^/gm, `${prefix} `)
       outputChannel.appendLine(msg)
     }
   })
