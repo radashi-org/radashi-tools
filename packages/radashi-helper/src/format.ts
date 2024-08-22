@@ -15,7 +15,9 @@ export async function format(filter: string[], options: CommonOptions) {
   )
 
   const biomeGlobs = ['src/**/*', 'tests/**/*', 'benchmarks/**/*']
-  let biomeFiles = await glob(biomeGlobs)
+  let biomeFiles = await glob(biomeGlobs, {
+    cwd: env.root,
+  })
 
   const prettierGlobs = [
     'package.json',
@@ -23,7 +25,9 @@ export async function format(filter: string[], options: CommonOptions) {
     'docs/**/*',
     'scripts/**/*',
   ]
-  let prettierFiles = await glob(prettierGlobs)
+  let prettierFiles = await glob(prettierGlobs, {
+    cwd: env.root,
+  })
 
   // If arguments were passed, filter the list of files to only include those.
   if (filter.length > 0) {
