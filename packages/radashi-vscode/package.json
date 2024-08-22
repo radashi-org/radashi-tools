@@ -2,7 +2,7 @@
   "name": "radashi-vscode",
   "displayName": "Radashi",
   "description": "Commands for managing your own Radashi",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "publisher": "aleclarson",
   "engines": {
     "vscode": "^1.75.0"
