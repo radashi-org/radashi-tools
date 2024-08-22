@@ -15,69 +15,80 @@ app
     await build(flags)
   })
 
-app.command('fn [subcommand]', 'Manage your functions').action(async () => {
-  const fn = cac('radashi fn')
+app
+  .command('fn [subcommand]', 'Manage your functions')
+  .allowUnknownOptions()
+  .action(async () => {
+    const fn = cac('radashi fn')
 
-  fn.option(
-    '-C, --dir <dir>',
-    'Set the directory where your Radashi is located',
-  )
+    fn.option(
+      '-C, --dir <dir>',
+      'Set the directory where your Radashi is located',
+    )
 
-  fn.command('create [name]', 'Scaffold the files for a custom function')
-    .alias('add')
-    .option('-e, --editor', 'Open the new function in the specified editor')
-    .option('-d, --description', 'Set the description for the new function')
-    .option('-g, --group', 'Set the group for the new function')
-    .action(async (name: string | undefined, flags) => {
-      if (name?.includes('/')) {
-        const parts = name.split('/')
-        flags.group = parts[0]
-        name = parts[1]
-      }
-      const { createFunction } = await import('./fn-create')
-      await createFunction(name, flags)
-    })
+    fn.command('create [name]', 'Scaffold the files for a custom function')
+      .alias('add')
+      .option('-e, --editor', 'Open the new function in the specified editor')
+      .option('-d, --description', 'Set the description for the new function')
+      .option('-g, --group', 'Set the group for the new function')
+      .action(async (name: string | undefined, flags) => {
+        if (name?.includes('/')) {
+          const parts = name.split('/')
+          flags.group = parts[0]
+          name = parts[1]
+        }
+        const { createFunction } = await import('./fn-create')
+        await createFunction(name, flags)
+      })
 
-  fn.command('move [funcPath] [dest]', 'Rename a function‘s files')
-    .alias('rename')
-    .alias('mv')
-    .example(
-      bin =>
-        dedent`
+    fn.command('move [funcPath] [dest]', 'Rename a function‘s files')
+      .alias('rename')
+      .alias('mv')
+      .example(
+        bin =>
+          dedent`
           # Rename "objectify" to "objectToArray"
           ${bin} move array/objectify objectToArray
         `,
-    )
-    .example(
-      bin =>
-        dedent`
+      )
+      .example(
+        bin =>
+          dedent`
           # Move "sum" to the array group.
           ${bin} move number/sum array/sum
         `,
+      )
+      .action(
+        async (
+          funcPath: string | undefined,
+          dest: string | undefined,
+          flags,
+        ) => {
+          const { moveFunction } = await import('./fn-move')
+          await moveFunction({ ...flags, funcPath, dest })
+
+          log.warn(
+            'This command has only renamed the files. It didn‘t edit the codebase or commit the changes.',
+          )
+        },
+      )
+
+    fn.command(
+      'override [query]',
+      'Override a function from radashi-org/radashi',
     )
-    .action(
-      async (funcPath: string | undefined, dest: string | undefined, flags) => {
-        const { moveFunction } = await import('./fn-move')
-        await moveFunction({ ...flags, funcPath, dest })
+      .option('-E, --exact-match', 'Only match exact function names')
+      .action(async (query, flags) => {
+        const { addOverride } = await import('./fn-override')
+        await addOverride(query ?? '', flags)
+      })
 
-        log.warn(
-          'This command has only renamed the files. It didn‘t edit the codebase or commit the changes.',
-        )
-      },
-    )
-
-  fn.command('override [query]', 'Override a function from radashi-org/radashi')
-    .option('-E, --exact-match', 'Only match exact function names')
-    .action(async (query, flags) => {
-      const { addOverride } = await import('./fn-override')
-      await addOverride(query ?? '', flags)
-    })
-
-  await execute(fn, app.rawArgs.slice(1))
-})
+    await execute(fn, app.rawArgs.slice(1))
+  })
 
 app
   .command('pr [subcommand]', 'Create and import pull requests')
+  .allowUnknownOptions()
   .action(async () => {
     const pr = cac('radashi pr')
 
