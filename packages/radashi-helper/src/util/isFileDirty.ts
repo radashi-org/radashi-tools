@@ -1,9 +1,9 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import { debug } from './debug'
 
 export async function isFileDirty(filePath: string): Promise<boolean> {
   try {
-    const { stdout } = await execa('git', ['status', '--porcelain', filePath])
+    const { stdout } = await exec('git', ['status', '--porcelain', filePath])
     return stdout.trim().length > 0
   } catch (error) {
     debug(`Error checking file status: ${error}`)

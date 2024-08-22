@@ -3,7 +3,7 @@
 exports[`create a function > git diff (all-staged) 1`] = `
 "diff --git a/benchmarks/test/test.bench.ts b/benchmarks/test/test.bench.ts
 new file mode 100644
-index 0000000..f62fb89
+index 1234567..1234567
 --- /dev/null
 +++ b/benchmarks/test/test.bench.ts
 @@ -0,0 +1,8 @@
@@ -17,7 +17,7 @@ index 0000000..f62fb89
 +})
 diff --git a/docs/test/test.mdx b/docs/test/test.mdx
 new file mode 100644
-index 0000000..fbb3998
+index 1234567..1234567
 --- /dev/null
 +++ b/docs/test/test.mdx
 @@ -0,0 +1,14 @@
@@ -36,7 +36,7 @@ index 0000000..fbb3998
 +_.test()
 +\`\`\`
 diff --git a/mod.ts b/mod.ts
-index 1807e49..4394d32 100644
+index 1234567..1234567 100644
 --- a/mod.ts
 +++ b/mod.ts
 @@ -4,3 +4,4 @@ export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType
@@ -46,7 +46,7 @@ index 1807e49..4394d32 100644
 +export { test } from './src/test/test.ts'
 diff --git a/src/test/test.ts b/src/test/test.ts
 new file mode 100644
-index 0000000..5d84801
+index 1234567..1234567
 --- /dev/null
 +++ b/src/test/test.ts
 @@ -0,0 +1,10 @@
@@ -62,7 +62,7 @@ index 0000000..5d84801
 +  export function test(): void {}
 diff --git a/tests/test/test.test.ts b/tests/test/test.test.ts
 new file mode 100644
-index 0000000..acfcaca
+index 1234567..1234567
 --- /dev/null
 +++ b/tests/test/test.test.ts
 @@ -0,0 +1,7 @@

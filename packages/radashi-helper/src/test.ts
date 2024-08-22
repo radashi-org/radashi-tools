@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import glob from 'fast-glob'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
@@ -36,7 +36,7 @@ export async function startTestRunner(
 
   debug('Running:', ['pnpm', ...args])
 
-  await execa('pnpm', args, {
+  await exec('pnpm', args, {
     cwd: env.root,
     stdio,
   })

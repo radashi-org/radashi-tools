@@ -133,7 +133,8 @@ exports[`move a function > logs 1`] = `
 [info] Renaming ./benchmarks/number/add.bench.ts to ./benchmarks/test/combine.bench.ts
 [info] Removing empty directory: ./benchmarks/number
 [info] Renaming ./tests/number/add.test.ts to ./tests/test/combine.test.ts
-[info] Removing empty directory: ./tests/number"
+[info] Removing empty directory: ./tests/number
+[warn] This command has only renamed the files. It didn‘t edit the codebase or commit the changes."
 `;
 
 exports[`move a function > opened files 1`] = `[]`;

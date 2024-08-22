@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import { debug } from './debug'
 import { forwardStderrAndRethrow } from './error'
 
@@ -7,13 +7,13 @@ export async function isGitHubAuthenticated() {
     return true
   }
 
-  const { exitCode } = await execa('gh', ['auth', 'status'], { reject: false })
+  const { exitCode } = await exec('gh', ['auth', 'status'], { reject: false })
   return exitCode === 0
 }
 
 export async function prepareGitHubDefaultRepo(cwd?: string) {
   const radashiUrl = 'https://github.com/radashi-org/radashi'
-  const originUrl = await execa('git', ['remote', 'get-url', 'origin'], {
+  const originUrl = await exec('git', ['remote', 'get-url', 'origin'], {
     cwd,
   }).then(r => r.stdout)
 
@@ -22,7 +22,7 @@ export async function prepareGitHubDefaultRepo(cwd?: string) {
   // There needs to exist a remote pointing to the main repository,
   // since the GitHub CLI relies on it.
   if (originUrl !== radashiUrl) {
-    await execa('git', ['remote', 'add', 'radashi', radashiUrl], {
+    await exec('git', ['remote', 'add', 'radashi', radashiUrl], {
       cwd,
       reject: false,
     })
@@ -30,7 +30,7 @@ export async function prepareGitHubDefaultRepo(cwd?: string) {
     // If the GitHub CLI is authenticated, make sure it uses the main
     // repository as the default for things like checking out PRs.
     if (await isGitHubAuthenticated()) {
-      await execa('gh', ['repo', 'set-default', 'radashi-org/radashi'], {
+      await exec('gh', ['repo', 'set-default', 'radashi-org/radashi'], {
         cwd,
       }).catch(forwardStderrAndRethrow)
     }

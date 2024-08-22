@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import { proxied } from 'radashi'
 import { botCommit } from '../bot'
 import type { Env } from '../env'
@@ -59,7 +59,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
         'atom',
       ]) {
         try {
-          await execa('command', ['-v', editor])
+          await exec('command', ['-v', editor])
           choices.push({
             title: `Open with ${displayNames[editor]}`,
             value: editor,
@@ -143,7 +143,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
   }
 
   if (editor) {
-    await execa(editor, [file], { stdio }).catch(forwardStderrAndRethrow)
+    await exec(editor, [file], { stdio }).catch(forwardStderrAndRethrow)
   }
 }
 

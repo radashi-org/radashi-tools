@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import glob from 'fast-glob'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
@@ -20,7 +20,7 @@ export async function lint(files: string[], options: CommonOptions) {
       const biomeGlobs = ['./src', './tests', './benchmarks'].flatMap(
         rootGlob => [rootGlob, rootGlob.replace('./', './overrides/')],
       )
-      await execa('pnpm', ['biome', 'check', ...biomeGlobs], {
+      await exec('pnpm', ['biome', 'check', ...biomeGlobs], {
         cwd: env.root,
         stdio,
       }).catch(error => {
@@ -31,7 +31,7 @@ export async function lint(files: string[], options: CommonOptions) {
       binFile === 'eslint' &&
       (await glob('eslint.config.*', { cwd: env.root })).length > 0
     ) {
-      await execa('pnpm', ['eslint', ...files], {
+      await exec('pnpm', ['eslint', ...files], {
         cwd: env.root,
         stdio,
       }).catch(error => {

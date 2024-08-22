@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import { existsSync } from 'node:fs'
 import { copyFile, mkdir } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -42,14 +42,14 @@ export async function addOverride(
   await defer(async onFinish => {
     if (options.fromBranch) {
       // Checkout the specified branch.
-      await execa('git', ['checkout', options.fromBranch], {
+      await exec('git', ['checkout', options.fromBranch], {
         cwd: env.radashiDir,
         stdio,
       })
 
       // Checkout the previous branch when copying is done.
       onFinish(async () => {
-        await execa('git', ['checkout', '-'], {
+        await exec('git', ['checkout', '-'], {
           cwd: env.radashiDir,
         })
       })
@@ -105,7 +105,6 @@ export async function addOverride(
     cwd: env.root,
     add: ['mod.ts', 'overrides'],
   })
-  log('\nOverride committed to the current branch.')
 }
 
 async function tryCopyFile(src: string, dst: string) {

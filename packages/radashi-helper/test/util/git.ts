@@ -1,14 +1,14 @@
-import { execa, type Result } from 'execa'
+import { exec, type Result } from 'exec'
 
 export type GitDiffMode = 'all-staged' | 'last-commit'
 
 export async function gitDiff(mode: GitDiffMode) {
   let diff: Result
   if (mode === 'all-staged') {
-    await execa('git', ['add', '-A'])
-    diff = await execa('git', ['diff', '--staged'])
+    await exec('git', ['add', '-A'])
+    diff = await exec('git', ['diff', '--staged'])
   } else if (mode === 'last-commit') {
-    diff = await execa('git', ['diff', 'HEAD^'])
+    diff = await exec('git', ['diff', 'HEAD^'])
   } else {
     throw new Error(`Unknown git diff mode: ${mode}`)
   }
@@ -16,7 +16,7 @@ export async function gitDiff(mode: GitDiffMode) {
 }
 
 export async function gitCurrentBranch(cwd = process.cwd()) {
-  const { stdout: currentBranch } = await execa(
+  const { stdout: currentBranch } = await exec(
     'git',
     ['rev-parse', '--abbrev-ref', 'HEAD'],
     { cwd },
@@ -25,7 +25,7 @@ export async function gitCurrentBranch(cwd = process.cwd()) {
 }
 
 export async function gitBranchExists(branch: string, cwd = process.cwd()) {
-  const { exitCode } = await execa('git', ['rev-parse', '--verify', branch], {
+  const { exitCode } = await exec('git', ['rev-parse', '--verify', branch], {
     cwd,
     reject: false,
   })
@@ -43,9 +43,9 @@ export async function gitHardReset(ref: string, cwd = process.cwd()) {
   }
 
   // Reset the files.
-  await execa('git', ['checkout', ref, '-f'], { cwd })
-  await execa('git', ['reset', '--hard', ref], { cwd })
-  await execa('git', ['clean', '-df'], { cwd })
+  await exec('git', ['checkout', ref, '-f'], { cwd })
+  await exec('git', ['reset', '--hard', ref], { cwd })
+  await exec('git', ['clean', '-df'], { cwd })
 }
 
 /**
@@ -58,10 +58,10 @@ export async function gitClobberBranch(cwd = process.cwd()) {
     )
   }
 
-  await execa('git', ['checkout', '--orphan', 'tmp'], { cwd })
-  await execa('git', ['commit', '-m', 'Initial commit'], { cwd })
-  await execa('git', ['branch', '-D', 'test'], { cwd })
-  await execa('git', ['branch', '-m', 'test'], { cwd })
+  await exec('git', ['checkout', '--orphan', 'tmp'], { cwd })
+  await exec('git', ['commit', '-m', 'Initial commit'], { cwd })
+  await exec('git', ['branch', '-D', 'test'], { cwd })
+  await exec('git', ['branch', '-m', 'test'], { cwd })
 }
 
 export async function getGitCommitSHAs({
@@ -71,7 +71,7 @@ export async function getGitCommitSHAs({
   short?: boolean
   cwd?: string
 } = {}) {
-  const { stdout } = await execa('git', ['log', '--pretty=format:%H'], {
+  const { stdout } = await exec('git', ['log', '--pretty=format:%H'], {
     cwd,
   })
   return short

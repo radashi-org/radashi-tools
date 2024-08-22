@@ -1,9 +1,7 @@
-import type { ExecaMethod } from 'execa'
+import type { StdioOption } from 'exec'
 
-type ExecaOptions = Extract<Parameters<ExecaMethod>[1], object>
+export let stdio: StdioOption = 'ignore'
 
-export let stdio: ExecaOptions['stdio'] = 'ignore'
-
-export function setStdio(arg: ExecaOptions['stdio']) {
+export function setStdio(arg: StdioOption) {
   stdio = arg
 }

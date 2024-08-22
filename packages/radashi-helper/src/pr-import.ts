@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import globRegex from 'glob-regex'
 import { yellow } from 'kleur/colors'
 import { existsSync } from 'node:fs'
@@ -52,7 +52,7 @@ export async function importPullRequest(
   await pullRadashi(env)
 
   // Delete previous PR branch.
-  await execa('git', ['branch', '-D', 'pr-' + prNumber], {
+  await exec('git', ['branch', '-D', 'pr-' + prNumber], {
     cwd: env.radashiDir,
     reject: false,
   })
@@ -60,7 +60,7 @@ export async function importPullRequest(
   log('Checking out PR...')
 
   // Checkout the PR.
-  await execa('gh', ['pr', 'checkout', prNumber, '-b', 'pr-' + prNumber], {
+  await exec('gh', ['pr', 'checkout', prNumber, '-b', 'pr-' + prNumber], {
     cwd: env.radashiDir,
   }).catch(error => {
     log.error(error.stderr)
@@ -83,7 +83,7 @@ export async function importPullRequest(
   debug('Target branch of the PR:', targetBranch)
 
   // Ensure the target branch exists locally and is up-to-date.
-  await execa(
+  await exec(
     'git',
     ['fetch'].concat(
       targetBranch.includes('/')
@@ -96,7 +96,7 @@ export async function importPullRequest(
   ).catch(forwardStderrAndRethrow)
 
   // Get the base commit of the PR
-  const baseCommit = await execa('git', ['merge-base', 'HEAD', targetBranch], {
+  const baseCommit = await exec('git', ['merge-base', 'HEAD', targetBranch], {
     cwd: env.radashiDir,
   }).then(r => r.stdout)
 
@@ -180,7 +180,7 @@ export async function importPullRequest(
     )
   }
 
-  let prTitle = await execa(
+  let prTitle = await exec(
     'gh',
     ['pr', 'view', '--json', 'title', '--jq', '.title'],
     { cwd: env.radashiDir },
@@ -244,7 +244,7 @@ async function tryCopyFile(src: string, dst: string) {
 }
 
 async function parseGitDiff(ref: string, opts: { cwd: string }) {
-  const { stdout: nameStatus } = await execa(
+  const { stdout: nameStatus } = await exec(
     'git',
     ['diff', ref, '--name-status'],
     opts,
@@ -262,7 +262,7 @@ async function parseGitDiff(ref: string, opts: { cwd: string }) {
  * Get the remote branch being targeted by the currently checked-out pull request.
  */
 async function getTargetBranch(env: Env) {
-  const { stdout } = await execa(
+  const { stdout } = await exec(
     'gh',
     ['pr', 'view', '--json', 'baseRefName', '--jq', '.baseRefName'],
     { cwd: env.radashiDir },

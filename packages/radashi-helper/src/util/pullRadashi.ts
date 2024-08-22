@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import { existsSync } from 'node:fs'
 import { memo } from 'radashi'
 import type { Env } from '../env'
@@ -24,31 +24,31 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
         // Ensure the remote URL is set to the correct clone URL. For
         // exact alpha/beta versions, the tags are stored in another
         // repository.
-        await execa(
+        await exec(
           'git',
           ['remote', 'set-url', 'origin', getRadashiCloneURL(ref)],
           { cwd: env.radashiDir },
         ).catch(forwardStderrAndRethrow)
 
         // In case the ref was not found, fetch the latest changes.
-        await execa('git', ['fetch', 'origin', ref], {
+        await exec('git', ['fetch', 'origin', ref], {
           cwd: env.radashiDir,
           stdio,
         })
 
-        await execa('git', ['checkout', ref], {
+        await exec('git', ['checkout', ref], {
           cwd: env.radashiDir,
         }).catch(forwardStderrAndRethrow)
       } else {
         // Switch to the branch if it's not already checked out.
-        await execa('git', ['checkout', ref], {
+        await exec('git', ['checkout', ref], {
           cwd: env.radashiDir,
           reject: false,
         })
 
         log('Updating radashi. Please wait...')
 
-        await execa('git', ['pull', 'origin', ref], {
+        await exec('git', ['pull', 'origin', ref], {
           cwd: env.radashiDir,
           stdio,
         })
@@ -62,11 +62,11 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
       })
     }
 
-    // await execa('git', ['checkout', '-b', 'dev'], {
+    // await exec('git', ['checkout', '-b', 'dev'], {
     //   cwd: env.radashiDir,
     // }).catch(forwardStderrAndRethrow)
 
-    // await execa('git', ['branch', '--set-upstream-to=origin/' + ref], {
+    // await exec('git', ['branch', '--set-upstream-to=origin/' + ref], {
     //   cwd: env.radashiDir,
     // }).catch(forwardStderrAndRethrow)
   },
@@ -81,13 +81,13 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
  */
 async function isRepoInSync(ref: string, opts: { cwd: string }) {
   try {
-    const { stdout: refCommit } = await execa(
+    const { stdout: refCommit } = await exec(
       'git',
       ['rev-parse', '--verify', ref],
       opts,
     )
 
-    const { stdout: headCommit } = await execa(
+    const { stdout: headCommit } = await exec(
       'git',
       ['rev-parse', 'HEAD'],
       opts,

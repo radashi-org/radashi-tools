@@ -1,5 +1,5 @@
 import cac, { type CAC } from 'cac'
-import { execaSync } from 'execa'
+import { exec } from 'exec'
 import { dedent } from './util/dedent'
 import { log } from './util/log'
 
@@ -28,8 +28,8 @@ app.command('fn [subcommand]', 'Manage your functions').action(async () => {
     .option('-e, --editor', 'Open the new function in the specified editor')
     .option('-d, --description', 'Set the description for the new function')
     .option('-g, --group', 'Set the group for the new function')
-    .action(async (name: string, flags) => {
-      if (name.includes('/')) {
+    .action(async (name: string | undefined, flags) => {
+      if (name?.includes('/')) {
         const parts = name.split('/')
         flags.group = parts[0]
         name = parts[1]
@@ -165,7 +165,7 @@ app.command('help', 'Walk through a tutorial').action(async () => {
 export function run(argv: string[]) {
   return execute(app, argv, sections => {
     if (argv[0] === 'test') {
-      execaSync('pnpm', ['-s', 'vitest', '--help'], { stdio: 'inherit' })
+      exec('pnpm', ['-s', 'vitest', '--help'], { stdio: 'inherit' })
       return []
     }
     return sections

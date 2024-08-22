@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { execa } from 'execa'
+import { exec } from 'exec'
 import fs from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { sift } from 'radashi'
@@ -66,7 +66,7 @@ async function emitDeclarationTypes(
   outDir: string,
   flags: { watch?: boolean } = {},
 ) {
-  const result = execa(
+  const result = exec(
     'pnpm',
     sift([
       'tsc',

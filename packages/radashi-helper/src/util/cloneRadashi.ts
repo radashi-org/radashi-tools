@@ -1,4 +1,4 @@
-import { execa, type Options as ExecaOptions } from 'execa'
+import { exec, type ExecOptions } from 'exec'
 import type { PackageJson } from 'type-fest'
 import { forwardStderrAndRethrow, RadashiError } from './error'
 import { prepareGitHubDefaultRepo } from './github'
@@ -14,7 +14,7 @@ export async function getInstalledRadashiRef(pkg: PackageJson) {
   if (ref === 'beta') {
     ref = 'main'
   } else if (ref !== 'next') {
-    ref = await execa('npm', ['view', 'radashi@' + ref, '--json']).then(
+    ref = await exec('npm', ['view', 'radashi@' + ref, '--json']).then(
       ({ stdout }) => 'v' + JSON.parse(stdout).version,
     )
   }
@@ -39,10 +39,10 @@ export function getRadashiCloneURL(ref: string) {
 export async function cloneRadashi(
   ref: string,
   dir: string,
-  opts: ExecaOptions = {},
+  opts: ExecOptions = {},
 ) {
   const cloneUrl = getRadashiCloneURL(ref)
-  await execa(
+  await exec(
     'git',
     ['clone', cloneUrl, '--branch', ref, '--single-branch', dir],
     opts,

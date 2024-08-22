@@ -1,4 +1,4 @@
-import { execa } from 'execa'
+import { exec } from 'exec'
 import glob from 'fast-glob'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
@@ -8,7 +8,7 @@ export async function format(filter: string[], options: CommonOptions) {
   const env = options.env ?? getEnv(options.dir)
 
   // 1. Remember if the user has uncommitted changes (ignoring untracked files).
-  const { stdout: uncommittedChanges } = await execa(
+  const { stdout: uncommittedChanges } = await exec(
     'git',
     ['status', '--porcelain', '-uno'],
     { cwd: env.root },
@@ -34,7 +34,7 @@ export async function format(filter: string[], options: CommonOptions) {
 
   // 2. Update the formatting.
   if (biomeFiles.length > 0) {
-    await execa(
+    await exec(
       'pnpm',
       [
         'biome',
@@ -50,20 +50,20 @@ export async function format(filter: string[], options: CommonOptions) {
   }
 
   if (prettierFiles.length > 0) {
-    await execa('pnpm', ['prettier', '--write', ...prettierFiles], {
+    await exec('pnpm', ['prettier', '--write', ...prettierFiles], {
       cwd: env.root,
       stdio,
     })
   }
 
   // 3. Commit if there were no uncommitted changes, but there are now.
-  const { stdout: currentChanges } = await execa(
+  const { stdout: currentChanges } = await exec(
     'git',
     ['status', '--porcelain', '-uno'],
     { cwd: env.root },
   )
   if (!uncommittedChanges && currentChanges) {
-    await execa('git', ['add', '-u'], { cwd: env.root })
-    await execa('git', ['commit', '-m', 'chore: format'], { cwd: env.root })
+    await exec('git', ['add', '-u'], { cwd: env.root })
+    await exec('git', ['commit', '-m', 'chore: format'], { cwd: env.root })
   }
 }

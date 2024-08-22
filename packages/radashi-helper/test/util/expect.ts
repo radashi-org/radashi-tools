@@ -33,5 +33,13 @@ export function expectOpenedFilesToMatchSnapshot() {
 }
 
 export async function expectGitDiffToMatchSnapshot(mode: GitDiffMode) {
-  expect(await gitDiff(mode)).toMatchSnapshot(`git diff (${mode})`)
+  let output = await gitDiff(mode)
+
+  // Replace non-deterministic diff output.
+  output = output.replace(
+    /\bindex [0-9a-f]+\.\.[0-9a-f]+\b/g,
+    'index 1234567..1234567',
+  )
+
+  expect(output).toMatchSnapshot(`git diff (${mode})`)
 }
