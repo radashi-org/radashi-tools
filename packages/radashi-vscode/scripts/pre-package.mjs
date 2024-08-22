@@ -3,7 +3,6 @@ import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-
 // Copy README.md to dist folder
 fs.copyFileSync('README.md', 'dist/README.md')
 
@@ -26,6 +25,8 @@ const helperPackageJson = JSON.parse(
 
 // Read the package.json file
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+
+packageJson.name = 'radashi'
 packageJson.main = './extension.cjs'
 
 // Remove unnecessary fields
