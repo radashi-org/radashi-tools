@@ -1,8 +1,11 @@
 import * as vscode from 'vscode'
 import { getRadashiFolder } from './util/getRadashiFolder.js'
+import { outputChannel } from './util/outputChannel.js'
 
 export async function activate(context: vscode.ExtensionContext) {
   async function activate() {
+    outputChannel.appendLine('🔍 Searching for Radashi workspace...')
+
     const radashiFolder = await getRadashiFolder()
 
     const open = (url: string) => {
@@ -29,13 +32,17 @@ export async function activate(context: vscode.ExtensionContext) {
       }),
     )
 
-    vscode.commands.executeCommand(
+    await vscode.commands.executeCommand(
       'setContext',
       'radashi.hasRadashiWorkspace',
       !!radashiFolder && radashiFolder.type === 'workspace',
     )
 
     if (radashiFolder) {
+      outputChannel.appendLine(
+        `🏛️ Radashi workspace found at ${radashiFolder.path}`,
+      )
+
       context.subscriptions.push(
         vscode.commands.registerCommand('radashi.createFunction', async () => {
           const helper = await radashiFolder.helper
@@ -76,10 +83,14 @@ export async function activate(context: vscode.ExtensionContext) {
           ])
         }),
       )
+    } else {
+      outputChannel.appendLine(`🚫 Radashi workspace not found`)
     }
   }
 
-  activate()
+  activate().catch(error => {
+    outputChannel.appendLine(`🚫 Error activating Radashi: ${error.stack}`)
+  })
 
   // Listen for workspace changes
   vscode.workspace.onDidChangeWorkspaceFolders(() => {
@@ -88,7 +99,9 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.length = 0
 
     // Reactivate the extension
-    activate()
+    activate().catch(error => {
+      outputChannel.appendLine(`🚫 Error re-activating Radashi: ${error.stack}`)
+    })
   })
 }
 

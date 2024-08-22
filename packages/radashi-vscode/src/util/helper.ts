@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { inspect } from 'node:util'
 import pmemo from 'p-memoize'
 import { isString } from 'radashi'
@@ -7,6 +8,10 @@ import { outputChannel } from './outputChannel.js'
 export type RadashiHelper = Awaited<ReturnType<typeof importRadashiHelper>>
 
 export const importRadashiHelper = pmemo(async (pkgPath: string) => {
+  outputChannel.appendLine(
+    `🔧 Importing radashi-helper from ${fs.realpathSync(pkgPath)}`,
+  )
+
   const helper: typeof import('radashi-helper') = await import(pkgPath)
   const { run, RadashiError, EarlyExitError } = helper
 
