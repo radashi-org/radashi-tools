@@ -56,7 +56,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
       }
 
       return {
-        type: 'package',
+        type: 'workspace',
         path: radashiPath,
         helper: lazyImportRadashiHelper(radashiPath),
       }
@@ -87,8 +87,9 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
 
     if (workspaceFolder) {
       const root = path.join(workspaceFolder.uri.fsPath, radashiPath)
+
       return {
-        type: 'package',
+        type: 'workspace',
         path: root,
         helper: lazyImportRadashiHelper(root),
       }
