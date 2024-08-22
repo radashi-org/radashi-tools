@@ -12,7 +12,7 @@ export const importRadashiHelper = pmemo(async (pkgPath: string) => {
     `🔧 Importing radashi-helper from ${fs.realpathSync(pkgPath)}`,
   )
 
-  const helper: typeof import('radashi-helper') = await import(pkgPath)
+  const helper: typeof import('radashi-helper') = require(pkgPath)
   const { run, RadashiError, EarlyExitError } = helper
 
   helper.setPromptHandler(async options => {
