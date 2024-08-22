@@ -16,18 +16,17 @@
   "type": "module",
   "activationEvents": ["onStartupFinished"],
   "contributes": {
-    "configuration": [
-      {
-        "title": "Radashi",
-        "properties": {
-          "radashi.path": {
-            "type": "string",
-            "default": "",
-            "description": "The root directory of the Radashi workspace. If not set, the extension will search for a Radashi project in the workspace."
-          }
+    "configuration": {
+      "title": "Radashi",
+      "properties": {
+        "radashi.path": {
+          "title": "Radashi Workspace Path",
+          "type": "string",
+          "default": "",
+          "description": "The root directory of the Radashi workspace. If not set, the extension will search for a Radashi project in the workspace."
         }
       }
-    ],
+    },
     "commands": [
       {
         "command": "radashi.createFunction",
