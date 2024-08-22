@@ -2,6 +2,8 @@
 
 Manage your own Radashi with ease.
 
+**Important:** Do me a favor and star [our GitHub repo](https://github.com/radashi-org/radashi). It helps us get more eyes on Radashi.
+
 ## Features
 
 - Instantly search your functions, official functions, and community functions with one command. By default, the `ctrl+p` key binding is mapped to this command.
@@ -15,6 +17,8 @@ Manage your own Radashi with ease.
   - Request a new function be added to Radashi core.
   - Apply to join Radashi's core team.
 - …and more to come.
+
+Learn more at https://radashi.js.org/your-own-radashi
 
 ## Installation
 
