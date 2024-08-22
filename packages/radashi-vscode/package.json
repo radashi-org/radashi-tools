@@ -2,19 +2,23 @@
   "name": "radashi-vscode",
   "displayName": "Radashi",
   "description": "Commands for managing your own Radashi",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "publisher": "aleclarson",
   "engines": {
     "vscode": "^1.75.0"
   },
   "icon": "assets/logo.png",
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/radashi-org/radashi-vscode"
   },
   "type": "module",
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "configuration": {
       "title": "Radashi",
