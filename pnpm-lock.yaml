@@ -26,37 +26,34 @@ importers:
 
   packages/radashi-helper:
     dependencies:
-      '@babel/parser':
-        specifier: ^7.24.8
-        version: 7.25.3
-      cac:
-        specifier: ^6.7.14
-        version: 6.7.14
-      debug:
-        specifier: ^4.3.5
-        version: 4.3.6
       esbuild:
         specifier: ^0.23.0
         version: 0.23.1
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.2
-      prompts:
-        specifier: ^2.4.2
-        version: 2.4.2
     devDependencies:
+      '@babel/parser':
+        specifier: ^7.24.8
+        version: 7.25.3
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
       '@types/prompts':
         specifier: ^2.4.9
         version: 2.4.9
+      cac:
+        specifier: ^6.7.14
+        version: 6.7.14
+      debug:
+        specifier: ^4.3.5
+        version: 4.3.6
       escalade:
         specifier: ^3.1.2
         version: 3.1.2
       exec:
         specifier: link:src/exec
         version: link:src/exec
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.2
       glob-regex:
         specifier: ^0.3.2
         version: 0.3.2
@@ -69,6 +66,9 @@ importers:
       parse-imports-exports:
         specifier: ^0.1.1
         version: 0.1.1
+      prompts:
+        specifier: ^2.4.2
+        version: 2.4.2
       radashi:
         specifier: 12.2.0-beta.af825f4
         version: 12.2.0-beta.af825f4
