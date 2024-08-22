@@ -92,8 +92,7 @@ export async function activate(context: vscode.ExtensionContext) {
     outputChannel.appendLine(`🚫 Error activating Radashi: ${error.stack}`)
   })
 
-  // Listen for workspace changes
-  vscode.workspace.onDidChangeWorkspaceFolders(() => {
+  function reactivate() {
     // Dispose all existing subscriptions
     context.subscriptions.forEach(subscription => subscription.dispose())
     context.subscriptions.length = 0
@@ -102,6 +101,16 @@ export async function activate(context: vscode.ExtensionContext) {
     activate().catch(error => {
       outputChannel.appendLine(`🚫 Error re-activating Radashi: ${error.stack}`)
     })
+  }
+
+  // Listen for workspace changes
+  vscode.workspace.onDidChangeWorkspaceFolders(reactivate)
+
+  // Listen for changes to the workspace configuration
+  vscode.workspace.onDidChangeConfiguration(event => {
+    if (event.affectsConfiguration('radashi.path')) {
+      reactivate()
+    }
   })
 }
 

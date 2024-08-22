@@ -1,8 +1,9 @@
 import fs from 'node:fs'
-import path from 'node:path'
+import path, { isAbsolute } from 'node:path'
 import LazyPromise from 'p-lazy'
 import * as vscode from 'vscode'
 import { importRadashiHelper, type RadashiHelper } from './helper.js'
+import { outputChannel } from './outputChannel.js'
 
 export interface RadashiFolder {
   type: 'workspace' | 'package'
@@ -18,9 +19,9 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     )
   }
 
+  // Check if one of the workspace folders is a Radashi project
   const workspaceFolder = vscode.workspace.workspaceFolders?.find(folder => {
-    const folderPath = folder.uri.fsPath
-    return isRadashiPath(folderPath)
+    return isRadashiPath(folder.uri.fsPath)
   })
 
   if (workspaceFolder) {
@@ -31,23 +32,83 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     }
   }
 
-  // Search for Radashi in all workspace folders
-  const workspaceFolders = vscode.workspace.workspaceFolders
-  if (workspaceFolders) {
-    const packageJsonUris = await vscode.workspace.findFiles(
-      '**/package.json',
-      '**/node_modules/**',
+  // Check the "radashi.path" extension setting
+  const radashiPath = vscode.workspace
+    .getConfiguration('radashi')
+    .get<string>('path')
+
+  if (radashiPath) {
+    outputChannel.appendLine(
+      `🔍 Checking "radashi.path" setting: ${radashiPath}`,
     )
 
-    for (const packageJsonUri of packageJsonUris) {
-      const folderPath = path.dirname(packageJsonUri.fsPath)
+    if (isAbsolute(radashiPath)) {
+      if (!fs.existsSync(radashiPath)) {
+        outputChannel.appendLine(`🚫 ${radashiPath} does not exist`)
+        return undefined
+      }
 
-      if (isRadashiPath(folderPath)) {
-        return {
-          type: 'package',
-          path: folderPath,
-          helper: lazyImportRadashiHelper(folderPath),
+      if (!isRadashiPath(radashiPath)) {
+        outputChannel.appendLine(
+          `🚫 ${radashiPath} exists but is not a Radashi project`,
+        )
+        return undefined
+      }
+
+      return {
+        type: 'package',
+        path: radashiPath,
+        helper: lazyImportRadashiHelper(radashiPath),
+      }
+    }
+
+    if (!vscode.workspace.workspaceFolders) {
+      outputChannel.appendLine(
+        '🚫 Failed to resolve. No workspace folders found',
+      )
+      return undefined
+    }
+
+    const workspaceFolder = vscode.workspace.workspaceFolders.find(folder => {
+      const root = path.join(folder.uri.fsPath, radashiPath)
+
+      if (fs.existsSync(root)) {
+        if (isRadashiPath(root)) {
+          return true
         }
+
+        outputChannel.appendLine(
+          `🚫 ${root} exists but is not a Radashi project`,
+        )
+      }
+
+      return false
+    })
+
+    if (workspaceFolder) {
+      const root = path.join(workspaceFolder.uri.fsPath, radashiPath)
+      return {
+        type: 'package',
+        path: root,
+        helper: lazyImportRadashiHelper(root),
+      }
+    }
+  }
+
+  // Recursively search for Radashi in all workspace folders
+  const packageJsonUris = await vscode.workspace.findFiles(
+    '**/package.json',
+    '**/node_modules/**',
+  )
+
+  for (const packageJsonUri of packageJsonUris) {
+    const folderPath = path.dirname(packageJsonUri.fsPath)
+
+    if (isRadashiPath(folderPath)) {
+      return {
+        type: 'package',
+        path: folderPath,
+        helper: lazyImportRadashiHelper(folderPath),
       }
     }
   }
