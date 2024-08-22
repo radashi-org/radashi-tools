@@ -90,10 +90,12 @@ app
       'import <number>',
       'Copy files from a radashi-org/radashi pull request into your fork',
     )
-      .option('-f, --files <files...>', 'Only import the specified files', {
-        type: [String],
-      })
+      .option(
+        '-f, --files <file>',
+        'Only import the specified files (comma separated)',
+      )
       .action(async (prNumber: string, flags) => {
+        flags.files = flags.files?.split(',')
         const { importPullRequest } = await import('./pr-import')
         await importPullRequest(prNumber, flags)
       })
