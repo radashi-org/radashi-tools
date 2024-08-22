@@ -15,12 +15,14 @@ export const importRadashiHelper = pmemo(async (pkgPath: string) => {
   const helper: typeof import('radashi-helper') = require(pkgPath)
   const { run, RadashiError, EarlyExitError } = helper
 
+  const stripTrailingColon = (str: string) => str.replace(/:$/, '')
+
   helper.setPromptHandler(async options => {
     switch (options.type) {
       case 'confirm': {
         const quickPick = vscode.window.createQuickPick()
         quickPick.items = [{ label: 'Yes' }, { label: 'No' }]
-        quickPick.title = options.message
+        quickPick.placeholder = stripTrailingColon(options.message)
         quickPick.canSelectMany = false
 
         return new Promise<boolean>(resolve => {
@@ -41,7 +43,7 @@ export const importRadashiHelper = pmemo(async (pkgPath: string) => {
             description: choice.description,
           }),
         )
-        quickPick.title = options.message
+        quickPick.placeholder = stripTrailingColon(options.message)
         quickPick.canSelectMany = false
 
         return new Promise<any>(resolve => {
@@ -58,7 +60,7 @@ export const importRadashiHelper = pmemo(async (pkgPath: string) => {
       }
       case 'text': {
         const inputBox = vscode.window.createInputBox()
-        inputBox.title = options.message
+        inputBox.placeholder = stripTrailingColon(options.message)
 
         return new Promise<string>(resolve => {
           inputBox.onDidAccept(() => {
