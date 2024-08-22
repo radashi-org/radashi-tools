@@ -28,4 +28,4 @@ https://marketplace.visualstudio.com/items?itemName=aleclarson.radashi
 
 Every command is available through the command palette, prefixed with `Radashi:`.
 
-Note that some commands won't be available unless your Radashi exists in one of the open folders.
+Note that some commands won't be available unless your Radashi exists in one of the open folders. Alternatively, you can set the `radashi.path` setting to the path of your Radashi.
