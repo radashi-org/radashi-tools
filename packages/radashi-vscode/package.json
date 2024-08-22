@@ -91,7 +91,7 @@
   },
   "devDependencies": {
     "@types/vscode": "^1.75.0",
-    "@vscode/vsce": "^2.31.1",
+    "@vscode/vsce": "^3.0.0",
     "p-lazy": "^4.0.0",
     "p-memoize": "^7.1.1",
     "radashi": "12.2.0-beta.af825f4",
