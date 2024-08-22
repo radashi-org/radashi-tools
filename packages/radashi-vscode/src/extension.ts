@@ -93,6 +93,8 @@ export async function activate(context: vscode.ExtensionContext) {
   })
 
   function reactivate() {
+    outputChannel.appendLine('🔄 Reactivating Radashi...')
+
     // Dispose all existing subscriptions
     context.subscriptions.forEach(subscription => subscription.dispose())
     context.subscriptions.length = 0
