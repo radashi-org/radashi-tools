@@ -14,6 +14,7 @@
     "url": "https://github.com/radashi-org/radashi-vscode"
   },
   "type": "module",
+  "activationEvents": ["onStartupFinished"],
   "contributes": {
     "commands": [
       {
