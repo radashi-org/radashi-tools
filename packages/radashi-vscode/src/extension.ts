@@ -40,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     if (radashiFolder) {
       outputChannel.appendLine(
-        `🏛️ Radashi workspace found at ${radashiFolder.path}`,
+        `🏛️ Radashi workspace found at ${radashiFolder.path} (${radashiFolder.type})`,
       )
 
       context.subscriptions.push(
