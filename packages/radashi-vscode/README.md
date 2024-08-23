@@ -1,5 +1,9 @@
 # Radashi
 
+![Gitter.im](https://badges.gitter.im/join_chat.svg)
+![License](https://img.shields.io/npm/l/radashi-helper)
+![code style: biome.js](https://img.shields.io/badge/code_style-biome.js-blue?logo=biome)
+
 Manage your own Radashi with ease.
 
 **Important:** Do me a favor and star [our GitHub repo](https://github.com/radashi-org/radashi). It helps us get more eyes on Radashi.

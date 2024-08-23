@@ -1,5 +1,7 @@
 # radashi-helper
 
+![Gitter.im](https://badges.gitter.im/join_chat.svg)
+![License](https://img.shields.io/npm/l/radashi-helper)
 ![npm](https://img.shields.io/npm/v/radashi-helper)
 ![code style: biome.js](https://img.shields.io/badge/code_style-biome.js-blue?logo=biome)
 
