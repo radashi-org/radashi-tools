@@ -115,6 +115,28 @@ app
   })
 
 app
+  .command('pkg [subcommand]', 'Manage your bundled dependencies')
+  .allowUnknownOptions()
+  .action(async () => {
+    const pkg = cac('radashi pkg')
+
+    pkg.option(
+      '-C, --dir <dir>',
+      'Set the directory where your Radashi is located',
+    )
+
+    pkg
+      .command('import <name>', 'Add a bundled dependency')
+      .alias('add')
+      .action(async (name: string, flags) => {
+        const { importPackage } = await import('./pkg-import')
+        await importPackage(name, flags)
+      })
+
+    await execute(pkg, app.rawArgs.slice(1))
+  })
+
+app
   .command('open [query]', 'Open function files in your editor')
   .option('-s, --source', 'Open the source file')
   .option('-t, --test', 'Open the test file (and type tests)')
