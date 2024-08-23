@@ -3,7 +3,13 @@ import { type Stream, Writable } from 'node:stream'
 import { isArray, isFunction } from 'radashi'
 import spawn from 'tinyspawn'
 
-export function exec(command: string, args: string[], options?: ExecOptions) {
+type Falsy = null | undefined | false | ''
+
+export function exec(
+  command: string,
+  args: (string | Falsy)[],
+  options?: ExecOptions,
+) {
   let stdoutSink: Writable | undefined
   let stderrSink: Writable | undefined
 
@@ -23,7 +29,7 @@ export function exec(command: string, args: string[], options?: ExecOptions) {
     }
   }
 
-  const proc = spawn(command, args, options as TinySpawnOptions)
+  const proc = spawn(command, args as string[], options as TinySpawnOptions)
 
   if (stdoutSink) {
     proc.stdout!.pipe(stdoutSink)
