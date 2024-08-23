@@ -3,7 +3,16 @@ import { readFileSync } from 'node:fs'
 import { traverse } from 'radashi'
 import { isBabelNode } from './isBabelNode'
 
-export function getExportedNames(
+export function printExports(options: {
+  names: string[]
+  types: string[]
+  from: string
+}) {
+  const names = options.names.concat(options.types.map(name => `type ${name}`))
+  return `export { ${names.join(', ')} } from '${options.from}'`
+}
+
+export function extractExports(
   file: string,
   options: { types?: boolean | 'only' } = {},
 ) {
