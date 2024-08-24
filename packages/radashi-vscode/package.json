@@ -8,17 +8,13 @@
     "vscode": "^1.75.0"
   },
   "icon": "assets/logo.png",
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "repository": {
     "type": "git",
     "url": "https://github.com/radashi-org/radashi-vscode"
   },
   "type": "module",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
+  "activationEvents": ["onStartupFinished"],
   "contributes": {
     "configuration": {
       "title": "Radashi",
@@ -87,11 +83,11 @@
   },
   "scripts": {
     "build": "tsup",
-    "prepackage": "rimraf dist && pnpm -s build && node scripts/pre-package.mjs",
-    "package": "cd dist && vsce package",
-    "prerelease": "rimraf dist && pnpm -s build && node scripts/pre-package.mjs",
-    "release": "cd dist && vsce publish",
-    "format": "biome check --fix --unsafe"
+    "package": "pnpm -s vscode:prepackage && cd dist && vsce package",
+    "release": "pnpm -s vscode:prepackage && cd dist && vsce publish",
+    "format": "biome check --fix --unsafe",
+    "lint": "biome check && tsc -p .",
+    "vscode:prepackage": "pnpm -s lint && rimraf dist && pnpm -s build && node scripts/pre-package.mjs"
   },
   "devDependencies": {
     "@types/vscode": "^1.75.0",
