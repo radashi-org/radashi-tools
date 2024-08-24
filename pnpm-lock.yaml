@@ -66,9 +66,6 @@ importers:
       p-lazy:
         specifier: ^4.0.0
         version: 4.0.0
-      parse-imports-exports:
-        specifier: ^0.1.1
-        version: 0.1.1
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -1508,14 +1505,8 @@ packages:
   package-json-from-dist@1.0.0:
     resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
 
-  parse-imports-exports@0.1.1:
-    resolution: {integrity: sha512-c/IZA6xmpGbEVypDn/9Ds7dVmHRafH6NnMsZTXxdD4+6yPkaJUKY9jXtVnyAaTwu7/+SsVsPRHlR1I/zWNiFqw==}
-
   parse-semver@1.1.1:
     resolution: {integrity: sha512-Eg1OuNntBMH0ojvEKSrvDSnwLmvVuUOSdylH/pSCPNMIspLlweJyIWXCE+k/5hm3cj/EBUYwmWkjhBALNP4LXQ==}
-
-  parse-statements@1.0.9:
-    resolution: {integrity: sha512-s+HQISpOrkluLrhkeqx7RrlqGwBoIjxUibajqUGuieJ4w+CK6V2pm0ig5Y+9jwr8J8EC5EMlLhAPGmZ+L8O1iQ==}
 
   parse5-htmlparser2-tree-adapter@7.0.0:
     resolution: {integrity: sha512-B77tOZrqqfUfnVcOrUvfdLbz4pu4RopLD/4vmu3HUPswwTA8OH0EMW9BlWR2B0RCoiZRAHEUu7IxeP1Pd1UU+g==}
@@ -3388,15 +3379,9 @@ snapshots:
 
   package-json-from-dist@1.0.0: {}
 
-  parse-imports-exports@0.1.1:
-    dependencies:
-      parse-statements: 1.0.9
-
   parse-semver@1.1.1:
     dependencies:
       semver: 5.7.2
-
-  parse-statements@1.0.9: {}
 
   parse5-htmlparser2-tree-adapter@7.0.0:
     dependencies:
