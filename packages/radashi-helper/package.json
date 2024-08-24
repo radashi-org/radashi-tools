@@ -36,14 +36,10 @@
       "default": "./dist/vitest/plugin.js"
     }
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "radashi",
-    "cli"
-  ],
+  "files": ["dist"],
+  "keywords": ["radashi", "cli"],
   "scripts": {
+    "prepublishOnly": "pnpm -s build",
     "build": "tsup --clean",
     "dev": "tsup --clean --watch --sourcemap",
     "lint": "tsc -p . && tsc -p test",
