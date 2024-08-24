@@ -66,7 +66,7 @@ The `name` should include the group and function names, like `number/sum` or `ob
 
 The `dest` can be a group name, like `array`, or a full path, like `array/sum`. If not provided, you will be prompted to decide what to do.
 
-**Important**: This command doesn't update any of the code. It will only rename the files.
+**Important**: This command doesn't update any of the code. It will only rename the files. This is being tracked in [#1](https://github.com/radashi-org/radashi-tools/issues/1).
 
 ```sh
 # Interactive mode
