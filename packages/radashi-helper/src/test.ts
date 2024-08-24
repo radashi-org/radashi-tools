@@ -9,30 +9,37 @@ export async function startTestRunner(
   globs: string[],
   { dir, env, ...flags }: Record<string, any> & CommonOptions,
 ) {
-  const files = await glob(
-    globs.map(glob => `src/**/${glob}*`),
-    {
-      cwd: process.cwd(),
-    },
-  )
-
-  const extraArgs: string[] = []
-
-  // If a single file was matched, only check coverage for that file.
-  if (files.length === 1) {
-    extraArgs.push('--coverage.include', files[0])
-  }
-
   env ??= getEnv(dir)
+
+  // The "vitest run" command disables watch mode.
+  let subCommand: string | undefined
+  if (globs[0] === 'run') {
+    subCommand = 'run'
+  }
 
   const args = [
     '-s',
     'vitest',
+    subCommand,
     '--coverage',
     ...globs,
     ...arrifyFlags(flags),
-    ...extraArgs,
   ]
+
+  // If globs are passed, only check coverage for the files that match
+  // the globs.
+  if (globs.length > 0) {
+    const globbishRE = /(^src\b|\*)/
+    const files = await glob(
+      globs.map(glob => (globbishRE.test(glob) ? glob : `src/**/${glob}*`)),
+      {
+        cwd: process.cwd(),
+      },
+    )
+    for (const file of files) {
+      args.push('--coverage.include', file)
+    }
+  }
 
   debug('Running:', ['pnpm', ...args])
 
