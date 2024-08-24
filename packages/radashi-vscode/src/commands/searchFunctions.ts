@@ -22,6 +22,10 @@ interface FunctionInfo {
   pr_number?: number
   committed_by: string | null
   committed_at: Date | null
+  /**
+   * Exists for local functions only.
+   */
+  docs_path?: string
 }
 
 export async function searchFunctions(
@@ -66,10 +70,8 @@ export async function searchFunctions(
         .replace(/\.ts$/, '.mdx')
         .replace(/(^|\/)src\//, '$1docs/')
 
-      const docs = fs.readFileSync(
-        path.join(radashiFolder.path, docsFile),
-        'utf8',
-      )
+      const docsFilePath = path.join(radashiFolder.path, docsFile)
+      const docs = fs.readFileSync(docsFilePath, 'utf8')
 
       const metadata: {
         title?: string
@@ -86,6 +88,7 @@ export async function searchFunctions(
           description: '',
           committed_at: null,
           committed_by: null,
+          docs_path: docsFilePath,
         },
         label: metadata.title ?? name,
         description: metadata.description ?? '',
@@ -238,21 +241,35 @@ export async function searchFunctions(
 
     switch (selectedOption) {
       case Opt.ViewDocumentation: {
-        let index: SearchIndex
-        let objectID: string
+        let index: SearchIndex | undefined
+        let objectID: string | undefined
 
-        if (selected.fn.pr_number) {
-          index = algolia.initIndex('proposed_functions')
-          objectID = `${selected.fn.name}#${selected.fn.pr_number}`
-        } else {
-          index = algolia.initIndex('merged_functions')
-          objectID = selected.fn.name
+        if (selected.fn.ref) {
+          if (selected.fn.pr_number) {
+            index = algolia.initIndex('proposed_functions')
+            objectID = `${selected.fn.name}#${selected.fn.pr_number}`
+          } else {
+            index = algolia.initIndex('merged_functions')
+            objectID = selected.fn.name
+          }
         }
 
         try {
-          const { documentation } = await index.getObject<{
-            documentation: string | null
-          }>(objectID, ['documentation'])
+          let documentation: string | undefined
+
+          if (index && objectID) {
+            const response = await index.getObject<{
+              documentation: string | null
+            }>(objectID, ['documentation'])
+
+            if (response.documentation) {
+              documentation = response.documentation
+            }
+          } else if (selected.fn.docs_path) {
+            try {
+              documentation = fs.readFileSync(selected.fn.docs_path, 'utf8')
+            } catch {}
+          }
 
           if (documentation) {
             await viewDocumentation(selected.fn, documentation)
@@ -316,9 +333,18 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
   }
 
   if (!fn.pr_number) {
-    const editUrl = `https://github.com/radashi-org/radashi/edit/main/docs/${fn.group}/${fn.name}.mdx`
-    const editLink = `<hr/><p><a href="${editUrl}" target="_blank">Edit this documentation</a></p>`
-    documentation += editLink
+    let editUrl: string | undefined
+
+    if (fn.ref) {
+      const [repo, branch] = fn.ref.split('#')
+      editUrl = `https://github.com/${repo}/edit/${branch}/docs/${fn.group}/${fn.name}.mdx`
+    } else if (fn.docs_path) {
+      editUrl = `file://${fn.docs_path}`
+    }
+
+    if (editUrl) {
+      documentation += `<hr/><p><a href="${editUrl}" target="_blank">Edit this documentation</a></p>`
+    }
   }
 
   const panel = vscode.window.createWebviewPanel(
