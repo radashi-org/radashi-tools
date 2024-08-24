@@ -1,4 +1,5 @@
-import fs from 'node:fs'
+import { existsSync } from 'node:fs'
+import fs from 'node:fs/promises'
 import path, { isAbsolute } from 'node:path'
 import LazyPromise from 'p-lazy'
 import * as vscode from 'vscode'
@@ -15,7 +16,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
   const isRadashiPath = (folderPath: string) => {
     return (
       path.basename(folderPath) === 'radashi' ||
-      fs.existsSync(path.join(folderPath, 'radashi.json'))
+      existsSync(path.join(folderPath, 'radashi.json'))
     )
   }
 
@@ -72,7 +73,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     const workspaceFolder = vscode.workspace.workspaceFolders.find(folder => {
       const root = path.join(folder.uri.fsPath, radashiPath)
 
-      if (fs.existsSync(root)) {
+      if (existsSync(root)) {
         if (isRadashiPath(root)) {
           return true
         }
@@ -117,9 +118,52 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
   return undefined
 }
 
-async function lazyImportRadashiHelper(root: string) {
-  return new LazyPromise<RadashiHelper>(resolve => {
-    const pkgPath = path.join(root, 'node_modules/radashi-helper')
-    resolve(importRadashiHelper(pkgPath))
+function lazy<T>(fn: () => Promise<T>) {
+  return new LazyPromise<T>((resolve, reject) => {
+    try {
+      resolve(fn())
+    } catch (error) {
+      reject(error)
+    }
   })
+}
+
+async function lazyImportRadashiHelper(root: string) {
+  return new LazyPromise(resolve =>
+    resolve(
+      (async (): Promise<RadashiHelper> => {
+        const pkgJsonPath = path.join(root, 'package.json')
+        const pkgJson = JSON.parse(await fs.readFile(pkgJsonPath, 'utf8'))
+
+        if (pkgJson.devDependencies?.['radashi-helper']) {
+          const nodeModulesDir = path.join(root, 'node_modules')
+          if (!existsSync(nodeModulesDir)) {
+            outputChannel.appendLine(
+              `🚫 node_modules directory not found: ${nodeModulesDir}`,
+            )
+            throw new Error(
+              `The node_modules directory does not exist. Run \`pnpm install\` first.`,
+            )
+          }
+
+          const helperPath = path.join(nodeModulesDir, 'radashi-helper')
+          if (existsSync(helperPath)) {
+            return importRadashiHelper(helperPath)
+          }
+
+          outputChannel.appendLine(
+            `🚫 radashi-helper not found in ${helperPath}`,
+          )
+        } else {
+          outputChannel.appendLine(
+            `🚫 radashi-helper not found in "devDependencies" of ${pkgJsonPath}`,
+          )
+        }
+
+        throw new Error(
+          `To use this command, you need to install radashi-helper. Run \`pnpm add -D radashi-helper\`.`,
+        )
+      })(),
+    ),
+  )
 }
