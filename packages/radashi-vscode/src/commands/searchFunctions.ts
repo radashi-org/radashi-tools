@@ -1,4 +1,4 @@
-import createAlgolia, { type SearchIndex } from 'algoliasearch'
+import type { SearchIndex } from 'algoliasearch'
 import glob from 'fast-glob'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -11,6 +11,7 @@ import type { RadashiFolder } from '../util/getRadashiFolder.js'
 import { memoAsync } from '../util/memoAsync.js'
 import { outputChannel } from '../util/outputChannel.js'
 import { formatRelativeElapsedTime } from '../util/time.js'
+import algoliasearch = require('algoliasearch')
 
 interface FunctionInfo {
   ref: string
@@ -25,7 +26,7 @@ interface FunctionInfo {
 export async function searchFunctions(
   radashiFolder: RadashiFolder | undefined,
 ) {
-  const algolia = createAlgolia(
+  const algolia = algoliasearch.default(
     '7YYOXVJ9K7',
     '7d9a76e671047bd60cf02883dc773861',
   )
