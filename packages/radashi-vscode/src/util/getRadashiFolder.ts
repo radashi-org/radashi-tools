@@ -50,7 +50,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     )
 
     if (isAbsolute(radashiPath)) {
-      if (!fs.existsSync(radashiPath)) {
+      if (!existsSync(radashiPath)) {
         outputChannel.appendLine(`🚫 ${radashiPath} does not exist`)
         return undefined
       }
