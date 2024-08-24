@@ -92,13 +92,17 @@
     "vscode:prepackage": "pnpm -s lint && rimraf dist && pnpm -s build && node scripts/pre-package.mjs"
   },
   "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
     "@types/vscode": "^1.75.0",
     "@vscode/vsce": "^3.0.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-front-matter": "^0.2.4",
     "p-lazy": "^4.0.0",
     "p-memoize": "^7.1.1",
     "radashi": "12.2.0-beta.af825f4",
     "radashi-helper": "workspace:^",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "ultrahtml": "^1.5.3"
   },
   "dependencies": {
     "@nozbe/microfuzz": "^1.0.0",

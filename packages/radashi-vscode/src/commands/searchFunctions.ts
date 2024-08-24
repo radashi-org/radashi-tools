@@ -268,7 +268,26 @@ export async function searchFunctions(
           } else if (selected.fn.docs_path) {
             try {
               documentation = fs.readFileSync(selected.fn.docs_path, 'utf8')
-            } catch {}
+            } catch {
+              outputChannel.appendLine(
+                `🚫 Failed to read documentation file: ${selected.fn.docs_path}`,
+              )
+            }
+            if (documentation) {
+              const { renderPageMarkdown } = await import('../util/markdown.js')
+              try {
+                const rendered = await renderPageMarkdown(documentation)
+                documentation = rendered!.text
+              } catch (error) {
+                outputChannel.appendLine(
+                  `🚫 Failed to render documentation file: ${selected.fn.docs_path}\n\n${error}`,
+                )
+                vscode.window.showErrorMessage(
+                  `Something went wrong while rendering ${selected.fn.name}‘s markdown file. Please report this with a reproducible example: https://github.com/radashi-org/radashi-tools/issues/new`,
+                )
+                break
+              }
+            }
           }
 
           if (documentation) {
