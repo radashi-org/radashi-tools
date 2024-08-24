@@ -99,6 +99,7 @@
     "rimraf": "^6.0.1"
   },
   "dependencies": {
+    "@nozbe/microfuzz": "^1.0.0",
     "algoliasearch": "4.24.0",
     "fast-glob": "3.3.2",
     "yaml": "2.5.0"

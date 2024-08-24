@@ -12,6 +12,7 @@ import { memoAsync } from '../util/memoAsync.js'
 import { outputChannel } from '../util/outputChannel.js'
 import { formatRelativeElapsedTime } from '../util/time.js'
 import algoliasearch = require('algoliasearch')
+import fuzzy = require('@nozbe/microfuzz')
 
 interface FunctionInfo {
   ref: string
@@ -194,7 +195,11 @@ export async function searchFunctions(
         outputChannel.appendLine(inspect(response.results, { depth: 10 }))
       }
 
-      const localResults = await localFunctionsPromise
+      const localResults = fuzzy
+        .default(await localFunctionsPromise, {
+          getText: ({ fn }: QuickPickItem) => [fn.name, fn.description],
+        })(query)
+        .map(result => result.item)
 
       quickPick.items = [...localResults, ...results]
 
