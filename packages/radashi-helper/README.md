@@ -31,17 +31,36 @@ Alternatively, there's a guide over at the [Radashi website](https://radashi.js.
 
 Note: This tool expects a specific project structure (the one used by [radashi-org/radashi-template](https://github.com/radashi-org/radashi-template)).
 
-### `radashi fn create [name]`
+&nbsp;
 
-> Aliases: `fn add`
+### `radashi fn create [name]`
 
 Scaffold the files for a new custom function.
 
+<table>
+<tr><td>Aliases</td><td><code>fn add</code></td></tr>
+</table>
+
+It creates the following files, skipping any that already exist:
+
+- `src/<group>/<name>.ts`
+- `tests/<group>/<name>.test.ts`
+- `docs/<group>/<name>.mdx`
+- `benchmarks/<group>/<name>.bench.ts`
+
+The `name` can be a full path, like `array/sum`, or just the function name, like `sum`. If not provided, you will be prompted to name the function and/or select a group.
+
+You'll also be prompted for a short description, which is added to the metadata at the top of the `docs/` file.
+
+&nbsp;
+
 ### `radashi fn move [name] [dest]`
 
-> Aliases: `fn rename`, `fn mv`
-
 Rename the files for a custom function.
+
+<table>
+<tr><td>Aliases</td><td><code>fn rename</code>, <code>fn mv</code></td></tr>
+</table>
 
 The `name` should include the group and function names, like `number/sum` or `object/pick`. If not provided, you will be prompted to pick the function you want.
 
@@ -60,6 +79,8 @@ pnpm radashi fn move array/objectify objectToArray
 pnpm radashi fn move number/sum array/sum
 ```
 
+&nbsp;
+
 ### `radashi fn override [query]`
 
 Copy the files for an existing function into your project's `overrides` folder.
@@ -74,6 +95,8 @@ pnpm radashi fn override
 pnpm radashi fn override number/sum
 ```
 
+&nbsp;
+
 ### `radashi pr import <pr-id>`
 
 Copy the files for a Radashi “pull request” into your project.
@@ -83,10 +106,116 @@ Copy the files for a Radashi “pull request” into your project.
 pnpm radashi pr import 208
 ```
 
-**Notes**
+#### Notes
 
 - [GitHub CLI](https://cli.github.com) must be installed for this command.
 - The `pr-id` must be a valid PR ID in the `radashi-org/radashi` repository. See the [pull requests page](https://github.com/radashi-org/radashi/pulls) to find one.
 - The PR will be automatically committed to your Radashi.
 - If the PR title doesn't follow the Conventional Commits format, you will be prompted to provide a commit message.
 - There's no need to run `pnpm build` after importing a PR, as this command will do it for you.
+
+&nbsp;
+
+### `radashi build`
+
+Compile and bundle the project, writing to the filesystem.
+
+```sh
+# Perform a production build.
+pnpm radashi build
+
+# Watch for changes and rebuild automatically.
+pnpm radashi build --watch
+
+# If you're using radashi-template:
+pnpm build
+```
+
+&nbsp;
+
+### `radashi lint [...globs]`
+
+Check your Radashi files for possible bugs, formatting issues, and other problems.
+
+Currently, this command supports Biome and ESLint.
+
+```sh
+# Lint all files.
+pnpm radashi lint
+
+# Lint only the files in the src folder.
+pnpm radashi lint src/**/*.ts
+
+# If you're using radashi-template:
+pnpm lint
+```
+
+&nbsp;
+
+### `radashi format [...globs]`
+
+Format your Radashi files using Biome.
+
+```sh
+# Format all files.
+pnpm radashi format
+
+# Format only the files in the src folder.
+pnpm radashi format src/**/*.ts
+
+# If you're using radashi-template:
+pnpm format
+```
+
+&nbsp;
+
+### `radashi test [...globs]`
+
+Run the tests for your custom Radashi functions.
+
+This command expects [Vitest](https://vitest.dev) to be installed in your project. This means any flags supported by Vitest will work.
+
+```sh
+# Run all tests.
+pnpm radashi test
+
+# Run only the tests for your "foo" function.
+pnpm radashi test foo
+
+# Run only the tests for the files that match the globs.
+pnpm radashi test src/array/*.ts
+
+# If you're using radashi-template:
+pnpm test
+```
+
+&nbsp;
+
+### `radashi open [query]`
+
+Open the files for a custom Radashi function in your preferred editor.
+
+If you don't have a preferred editor, you will be prompted to pick one.
+
+If you don't specify a query, you will be prompted to pick a function.
+
+```sh
+# Open the source file for the function named "foo".
+pnpm radashi open foo
+
+# Open all of the files related to the function named "foo".
+pnpm radashi open foo -A
+```
+
+#### Flags
+
+When no flags are provided, this command will open the source file by default.
+
+- `-s, --source`: Open the source file.
+- `-t, --test`: Open the test file.
+- `-T, --type-test`: Open the type test file.
+- `-b, --benchmark`: Open the benchmark file.
+- `-d, --docs`: Open the documentation file.
+- `-A, --all`: Open all related files.
+
+&nbsp;
