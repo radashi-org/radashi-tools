@@ -56,6 +56,7 @@ const ignoredFiles = [
   'node_modules/**/browser',
   'node_modules/**/benchmarks',
   'node_modules/**/*.{browser,umd}.js',
+  'node_modules/@nozbe/**/{react,src}',
 ]
 console.log()
 for (const file of glob.sync(
