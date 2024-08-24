@@ -43,3 +43,27 @@ execSync('npm install --ignore-scripts', {
   cwd: 'dist',
   stdio: 'inherit',
 })
+
+// Remove unnecessary files
+const ignoredFiles = [
+  'node_modules/.bin',
+  'node_modules/**/README.md',
+  'node_modules/**/CHANGELOG.md',
+  'node_modules/**/*.d.ts',
+  'node_modules/**/*.yml',
+  'node_modules/**/.github',
+  'node_modules/**/test',
+  'node_modules/**/browser',
+  'node_modules/**/benchmarks',
+  'node_modules/**/*.{browser,umd}.js',
+]
+console.log()
+for (const file of glob.sync(
+  ignoredFiles.map(file => path.join('dist', file)),
+  { onlyFiles: false },
+)) {
+  try {
+    fs.rmSync(file, { recursive: true })
+    console.log('Removed', file)
+  } catch {}
+}
