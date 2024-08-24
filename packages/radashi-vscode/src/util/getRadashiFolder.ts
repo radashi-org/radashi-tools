@@ -104,31 +104,17 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     const folderPath = path.dirname(packageJsonUri.fsPath)
 
     if (isRadashiPath(folderPath)) {
-      return {
-        type: 'package',
-        path: folderPath,
-        helper: lazyImportRadashiHelper(folderPath),
-      }
+      return createRadashiFolder('package', folderPath)
     }
   }
 
   return undefined
 }
 
-function lazy<T>(fn: () => Promise<T>) {
-  return new LazyPromise<T>((resolve, reject) => {
-    try {
-      resolve(fn())
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
 async function lazyImportRadashiHelper(root: string) {
-  return new LazyPromise(resolve =>
+  return new LazyPromise<RadashiHelper>(resolve =>
     resolve(
-      (async (): Promise<RadashiHelper> => {
+      (async () => {
         const pkgJsonPath = path.join(root, 'package.json')
         const pkgJson = JSON.parse(await fs.readFile(pkgJsonPath, 'utf8'))
 
