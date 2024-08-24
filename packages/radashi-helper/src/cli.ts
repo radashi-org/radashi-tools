@@ -9,7 +9,7 @@ app.option('-C, --dir <dir>', 'Set the directory where your Radashi is located')
 
 app
   .command('build', 'Compile and bundle the project, writing to the filesystem')
-  .option('--watch', 'Watch for changes')
+  .option('-w, --watch', 'Watch for changes')
   .action(async flags => {
     const { default: build } = await import('./build')
     await build(flags)
