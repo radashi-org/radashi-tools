@@ -8,9 +8,7 @@
     "vscode": "^1.75.0"
   },
   "icon": "assets/logo.png",
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "homepage": "https://radashi.js.org/your-own-radashi",
   "repository": {
     "type": "git",
@@ -18,9 +16,7 @@
     "directory": "packages/radashi-vscode"
   },
   "type": "module",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
+  "activationEvents": ["onStartupFinished"],
   "contributes": {
     "configuration": {
       "title": "Radashi",
