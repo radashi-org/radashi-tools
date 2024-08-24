@@ -9,9 +9,11 @@
   },
   "icon": "assets/logo.png",
   "categories": ["Other"],
+  "homepage": "https://radashi.js.org/your-own-radashi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/radashi-org/radashi-vscode"
+    "url": "https://github.com/radashi-org/radashi-tools.git",
+    "directory": "packages/radashi-vscode"
   },
   "type": "module",
   "activationEvents": ["onStartupFinished"],

@@ -5,6 +5,12 @@
   "description": "Help with managing your own Radashi",
   "author": "Alec Larson",
   "license": "MIT",
+  "homepage": "https://radashi.js.org/your-own-radashi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/radashi-org/radashi-tools.git",
+    "directory": "packages/radashi-helper"
+  },
   "main": "dist/cli.cjs",
   "types": "dist/cli.d.cts",
   "bin": {
