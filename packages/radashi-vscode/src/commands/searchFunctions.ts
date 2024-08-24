@@ -195,13 +195,16 @@ export async function searchFunctions(
         outputChannel.appendLine(inspect(response.results, { depth: 10 }))
       }
 
-      const localResults = fuzzy
-        .default(await localFunctionsPromise, {
-          getText: ({ fn }: QuickPickItem) => [fn.name, fn.description],
+      const localFuncs = await localFunctionsPromise
+
+      quickPick.items = fuzzy
+        .default([...localFuncs, ...results], {
+          getText: (item: QuickPickItem) => [
+            item.label,
+            item.description ?? null,
+          ],
         })(query)
         .map(result => result.item)
-
-      quickPick.items = [...localResults, ...results]
 
       outputChannel.appendLine(`✔️ Found ${quickPick.items.length} results`)
     } else {
