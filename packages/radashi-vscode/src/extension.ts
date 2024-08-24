@@ -59,17 +59,17 @@ export async function activate(context: vscode.ExtensionContext) {
       )
 
       registerCommand('radashi.createFunction', async () => {
-        const helper = await radashiFolder.helper
+        const helper = await radashiFolder.importHelper()
         await helper.run(['fn', 'create', '--dir', radashiFolder.path])
       })
 
       registerCommand('radashi.moveFunction', async () => {
-        const helper = await radashiFolder.helper
+        const helper = await radashiFolder.importHelper()
         await helper.run(['fn', 'move', '--dir', radashiFolder.path])
       })
 
       registerCommand('radashi.overrideFunction', async () => {
-        const helper = await radashiFolder.helper
+        const helper = await radashiFolder.importHelper()
         await helper.run(['fn', 'override', '--dir', radashiFolder.path])
       })
 
@@ -87,7 +87,7 @@ export async function activate(context: vscode.ExtensionContext) {
         if (!prNumber) {
           return // User cancelled the input
         }
-        const helper = await radashiFolder.helper
+        const helper = await radashiFolder.importHelper()
         await helper.run([
           'pr',
           'import',

@@ -372,7 +372,7 @@ async function viewPullRequest(fn: FunctionInfo) {
 }
 
 async function importFunction(fn: FunctionInfo, radashiFolder: RadashiFolder) {
-  const helper = await radashiFolder.helper
+  const helper = await radashiFolder.importHelper()
   await helper.run([
     'pr',
     'import',

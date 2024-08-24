@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path, { isAbsolute } from 'node:path'
 import LazyPromise from 'p-lazy'
+import memoize from 'p-memoize'
 import * as vscode from 'vscode'
 import { importRadashiHelper, type RadashiHelper } from './helper.js'
 import { outputChannel } from './outputChannel.js'
@@ -9,7 +10,7 @@ import { outputChannel } from './outputChannel.js'
 export interface RadashiFolder {
   type: 'workspace' | 'package'
   path: string
-  helper: Promise<RadashiHelper>
+  importHelper: () => Promise<RadashiHelper>
 }
 
 export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
@@ -20,17 +21,22 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
     )
   }
 
+  const createRadashiFolder = (
+    type: 'workspace' | 'package',
+    path: string,
+  ) => ({
+    type,
+    path,
+    importHelper: memoize(() => lazyImportRadashiHelper(path)),
+  })
+
   // Check if one of the workspace folders is a Radashi project
   const workspaceFolder = vscode.workspace.workspaceFolders?.find(folder => {
     return isRadashiPath(folder.uri.fsPath)
   })
 
   if (workspaceFolder) {
-    return {
-      type: 'workspace',
-      path: workspaceFolder.uri.fsPath,
-      helper: lazyImportRadashiHelper(workspaceFolder.uri.fsPath),
-    }
+    return createRadashiFolder('workspace', workspaceFolder.uri.fsPath)
   }
 
   // Check the "radashi.path" extension setting
@@ -56,11 +62,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
         return undefined
       }
 
-      return {
-        type: 'workspace',
-        path: radashiPath,
-        helper: lazyImportRadashiHelper(radashiPath),
-      }
+      return createRadashiFolder('workspace', radashiPath)
     }
 
     if (!vscode.workspace.workspaceFolders) {
@@ -88,12 +90,7 @@ export async function getRadashiFolder(): Promise<RadashiFolder | undefined> {
 
     if (workspaceFolder) {
       const root = path.join(workspaceFolder.uri.fsPath, radashiPath)
-
-      return {
-        type: 'workspace',
-        path: root,
-        helper: lazyImportRadashiHelper(root),
-      }
+      return createRadashiFolder('workspace', root)
     }
   }
 
