@@ -3,7 +3,7 @@ import glob from 'fast-glob'
 import fs from 'node:fs'
 import path from 'node:path'
 import { inspect } from 'node:util'
-import { dash, debounce, sift, tryit } from 'radashi'
+import { dash, debounce, sift, snake, tryit } from 'radashi'
 import * as vscode from 'vscode'
 import yaml from 'yaml'
 import { dedent } from '../util/dedent.js'
@@ -356,6 +356,8 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
 
   panel.webview.onDidReceiveMessage(async message => {
     if (message.command === 'themeDetected') {
+      outputChannel.appendLine(`🎨 Theme detected: ${message.theme}`)
+
       const themeId = dash(message.theme as string)
 
       let themePath: string | undefined
@@ -370,8 +372,33 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
       }
 
       if (themePath == null) {
-        vscode.window.showErrorMessage('Could not find theme')
-        return
+        const defaultThemeId = themeId.startsWith('default-')
+          ? snake(themeId.slice(8))
+              .replace('+', '_plus')
+              .replace(
+                /high_contrast(_light)?/,
+                (_, light) => 'hc' + (light ?? '_black'),
+              )
+          : themeId.startsWith('visual-studio-')
+            ? snake(themeId.slice(14)) + '_vs'
+            : null
+
+        if (defaultThemeId) {
+          const defaultThemePath = path.join(
+            vscode.env.appRoot,
+            'extensions/theme-defaults/themes',
+            defaultThemeId + '.json',
+          )
+
+          if (fs.existsSync(defaultThemePath)) {
+            themePath = defaultThemePath
+          }
+        }
+
+        if (themePath == null) {
+          vscode.window.showErrorMessage('Could not find theme')
+          return
+        }
       }
 
       let theme: any
