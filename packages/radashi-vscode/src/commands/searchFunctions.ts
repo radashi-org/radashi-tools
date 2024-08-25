@@ -63,7 +63,12 @@ export async function searchFunctions(
       const funcPath = file
         .replace(/\.ts$/, '')
         .split(path.sep)
-        .filter((part, i) => i === 0 || (i === 1 && part === 'src'))
+        .filter((part, i) => {
+          if (i === 0 || (i === 1 && part === 'src')) {
+            return false
+          }
+          return true
+        })
         .join('/')
 
       const docsFile = file
@@ -78,7 +83,7 @@ export async function searchFunctions(
         description?: string
       } = yaml.parse(docs.match(/---([\s\S]*?)---/)?.[1] ?? '')
 
-      const [group, name] = funcPath.split(/\/(?=[^\/]+$)/)
+      const [group, name] = funcPath.split('/')
 
       return {
         fn: {
