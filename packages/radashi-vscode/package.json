@@ -95,6 +95,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/vscode": "^1.75.0",
     "@vscode/vsce": "^3.0.0",
+    "jsonc-parser": "^3.3.1",
     "markdown-it-front-matter": "^0.2.4",
     "p-lazy": "^4.0.0",
     "p-memoize": "^7.1.1",

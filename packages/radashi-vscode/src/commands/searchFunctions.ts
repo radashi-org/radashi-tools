@@ -1,5 +1,6 @@
 import type { SearchIndex } from 'algoliasearch'
 import glob from 'fast-glob'
+import * as jsonc from 'jsonc-parser'
 import fs from 'node:fs'
 import path from 'node:path'
 import { inspect } from 'node:util'
@@ -429,7 +430,7 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
 
       try {
         const themeContent = fs.readFileSync(themePath, 'utf8')
-        theme = JSON.parse(themeContent)
+        theme = jsonc.parse(themeContent)
       } catch (error) {
         vscode.window.showErrorMessage(`Error reading theme file: ${error}`)
         return
