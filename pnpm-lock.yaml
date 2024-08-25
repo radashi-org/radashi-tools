@@ -99,6 +99,9 @@ importers:
       fast-glob:
         specifier: 3.3.2
         version: 3.3.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
       yaml:
         specifier: 2.5.0
         version: 2.5.0
@@ -112,9 +115,6 @@ importers:
       '@vscode/vsce':
         specifier: ^3.0.0
         version: 3.0.0
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
       markdown-it-front-matter:
         specifier: ^0.2.4
         version: 0.2.4

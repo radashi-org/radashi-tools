@@ -95,7 +95,6 @@
     "@types/markdown-it": "^14.1.2",
     "@types/vscode": "^1.75.0",
     "@vscode/vsce": "^3.0.0",
-    "markdown-it": "^14.1.0",
     "markdown-it-front-matter": "^0.2.4",
     "p-lazy": "^4.0.0",
     "p-memoize": "^7.1.1",
@@ -108,6 +107,7 @@
     "@nozbe/microfuzz": "^1.0.0",
     "algoliasearch": "4.24.0",
     "fast-glob": "3.3.2",
+    "markdown-it": "^14.1.0",
     "yaml": "2.5.0"
   }
 }
