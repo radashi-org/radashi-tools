@@ -55,12 +55,23 @@
     }
   });
 
+  const vscode = acquireVsCodeApi();
+
   // Send the theme name back to the extension
   if (themeId) {
-    const vscode = acquireVsCodeApi();
     vscode.postMessage({
       command: "themeDetected",
       theme: themeId,
+    });
+  }
+
+  const editLink = document.getElementById("edit-link");
+  if (editLink && editLink.href.startsWith("file://")) {
+    editLink.addEventListener("click", () => {
+      vscode.postMessage({
+        command: "editDocumentation",
+        path: editLink.href.replace("file://", ""),
+      });
     });
   }
 </script>

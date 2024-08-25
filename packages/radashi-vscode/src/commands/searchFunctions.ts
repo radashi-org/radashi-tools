@@ -368,7 +368,7 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
     }
 
     if (editUrl) {
-      documentation += `<hr/><p><a href="${editUrl}" target="_blank">Edit this documentation</a></p>`
+      documentation += `<hr/><p><a id="edit-link" href="${editUrl}" target="_blank">Edit this documentation</a></p>`
     }
   }
 
@@ -380,7 +380,13 @@ async function viewDocumentation(fn: FunctionInfo, documentation: string) {
   )
 
   panel.webview.onDidReceiveMessage(async message => {
-    if (message.command === 'themeDetected') {
+    if (message.command === 'editDocumentation') {
+      outputChannel.appendLine(
+        `📚 Opening documentation in editor: ${message.path}`,
+      )
+      const uri = vscode.Uri.file(message.path)
+      await vscode.window.showTextDocument(uri)
+    } else if (message.command === 'themeDetected') {
       outputChannel.appendLine(`🎨 Theme detected: ${message.theme}`)
 
       const themeId = dash(message.theme as string)
