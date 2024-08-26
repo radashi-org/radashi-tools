@@ -1,11 +1,14 @@
+import * as chokidar from 'chokidar'
 import * as esbuild from 'esbuild'
 import { exec } from 'exec'
-import fs from 'node:fs/promises'
+import fs, { readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { sift } from 'radashi'
+import type { Promisable } from 'type-fest'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
 import { esbuildRadashi } from './esbuild/plugin'
+import { log } from './util/log'
 import { stdio } from './util/stdio'
 
 export interface BuildOptions extends CommonOptions {
@@ -66,6 +69,7 @@ async function emitDeclarationTypes(
   outDir: string,
   flags: { watch?: boolean } = {},
 ) {
+  log('Emitting declaration types...')
   const result = exec(
     'pnpm',
     sift([
@@ -83,7 +87,38 @@ async function emitDeclarationTypes(
       stdio,
     },
   )
-  if (!flags.watch) {
+
+  const modPath = join(outDir, 'mod.d.ts')
+  const rewriteRadashiImport = async () => {
+    await editFile(modPath, data => {
+      return data.replace('./node_modules/radashi/dist/radashi', 'radashi')
+    })
+  }
+
+  if (flags.watch) {
+    let rewriting = false
+    chokidar.watch(outDir).on('all', async (type, file) => {
+      if (!rewriting && file === modPath && type !== 'unlink') {
+        rewriting = true
+        await rewriteRadashiImport()
+        setTimeout(() => {
+          rewriting = false
+        }, 250)
+      }
+    })
+  } else {
     await result
+    await rewriteRadashiImport()
+  }
+}
+
+async function editFile(
+  filePath: string,
+  callback: (data: string) => Promisable<string | false | null | undefined>,
+) {
+  const data = await readFile(filePath, 'utf-8')
+  const newData = await callback(data)
+  if (newData) {
+    await writeFile(filePath, newData, 'utf-8')
   }
 }
