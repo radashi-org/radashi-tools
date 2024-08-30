@@ -39,7 +39,7 @@ diff --git a/mod.ts b/mod.ts
 index 1234567..1234567 100644
 --- a/mod.ts
 +++ b/mod.ts
-@@ -4,3 +4,4 @@ export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType
+@@ -4,3 +4,4 @@ export { AggregateError, Any, DefaultCloningStrategy, FastCloningStrategy, all,
  
  // Our custom functions.
  export { add } from './src/number/add.ts'
@@ -51,15 +51,15 @@ index 1234567..1234567
 +++ b/src/test/test.ts
 @@ -0,0 +1,10 @@
 +/**
-+  * Does a thing.
-+  *
-+  * @see https://radashi.js.org/reference/test/test
-+  * @example
-+  * \`\`\`ts
-+  * test()
-+  * \`\`\`
-+  */
-+  export function test(): void {}
++ * Does a thing.
++ *
++ * @see https://radashi.js.org/reference/test/test
++ * @example
++ * \`\`\`ts
++ * test()
++ * \`\`\`
++ */
++export function test(): void {}
 diff --git a/tests/test/test.test.ts b/tests/test/test.test.ts
 new file mode 100644
 index 1234567..1234567
@@ -158,7 +158,8 @@ exports[`create a function > logs 1`] = `
 "[info] Created docs/test/test.mdx
 [info] Created src/test/test.ts
 [info] Created tests/test/test.test.ts
-[info] Created benchmarks/test/test.bench.ts"
+[info] Created benchmarks/test/test.bench.ts
+[info] Emitting declaration types..."
 `;
 
 exports[`create a function > opened files 1`] = `

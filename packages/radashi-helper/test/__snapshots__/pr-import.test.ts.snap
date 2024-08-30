@@ -63,7 +63,7 @@ diff --git a/mod.ts b/mod.ts
 index 1234567..1234567 100644
 --- a/mod.ts
 +++ b/mod.ts
-@@ -4,3 +4,4 @@ export { AggregateError, Any, type Assign, type BoxedPrimitive, type BuiltInType
+@@ -4,3 +4,4 @@ export { AggregateError, Any, DefaultCloningStrategy, FastCloningStrategy, all,
  
  // Our custom functions.
  export { add } from './src/number/add.ts'
@@ -133,6 +133,7 @@ index 1234567..1234567
 
 exports[`import a pr > logs 1`] = `
 "[info] Checking out PR...
+[info] Emitting declaration types...
 [info] 
 [info] [test *******] feat: add \`spiralSum\` function
 [info]  Author: Radashi Bot <175859458+radashi-bot@users.noreply.github.com>
