@@ -48,10 +48,14 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
 
         log('Updating radashi. Please wait...')
 
-        await exec('git', ['pull', 'origin', ref], {
-          cwd: env.radashiDir,
-          stdio,
-        })
+        try {
+          await exec('git', ['pull', 'origin', ref], {
+            cwd: env.radashiDir,
+            stdio,
+          })
+        } catch {
+          console.error('Pull exited with an error. Continuing...')
+        }
       }
 
       await prepareGitHubDefaultRepo(env.radashiDir)
