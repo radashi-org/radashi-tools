@@ -17,6 +17,9 @@ export class EarlyExitError extends RadashiError {
 
 export function forwardStderrAndRethrow(error: any): never {
   if (isError(error) && 'stderr' in error) {
+    if ('stdout' in error) {
+      log(error.stdout as string)
+    }
     log.error(error.stderr as string)
   }
   throw error
