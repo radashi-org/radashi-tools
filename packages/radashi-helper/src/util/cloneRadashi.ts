@@ -29,9 +29,9 @@ export function isPreReleaseRadashiTag(ref: string) {
 export function getRadashiCloneURL(ref: string) {
   let cloneUrl = 'https://github.com/radashi-org/radashi'
   if (isPreReleaseRadashiTag(ref)) {
-    // The "radashi-beta" repo is where versioned pre-release tags are
-    // stored, which helps to avoid spamming the main repo.
-    cloneUrl += '-beta'
+    // The "radashi-canary" repo is where versioned pre-release tags
+    // are stored, which helps to avoid spamming the main repo.
+    cloneUrl += '-canary'
   }
   return cloneUrl
 }
