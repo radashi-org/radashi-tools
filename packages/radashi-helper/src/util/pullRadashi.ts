@@ -65,14 +65,6 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
         stdio,
       })
     }
-
-    // await exec('git', ['checkout', '-b', 'dev'], {
-    //   cwd: env.radashiDir,
-    // }).catch(forwardStderrAndRethrow)
-
-    // await exec('git', ['branch', '--set-upstream-to=origin/' + ref], {
-    //   cwd: env.radashiDir,
-    // }).catch(forwardStderrAndRethrow)
   },
   {
     // Only run this function once per process.
