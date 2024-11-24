@@ -14,6 +14,10 @@ interface OptionalConfig {
    * The editor to use when opening a new function.
    */
   editor?: string
+  /**
+   * Packages that have been imported into the project.
+   */
+  vendor?: VendorConfig[]
 }
 
 /**
@@ -32,6 +36,34 @@ export interface UserConfig extends OptionalConfig {
    * @default ['esm']
    */
   formats?: ('esm' | 'cjs')[]
+}
+
+/**
+ * The config for a package that has been imported into the project.
+ */
+interface VendorConfig {
+  /** The name of the package. */
+  name: string
+  /**
+   * The exports to include from the package. If undefined, all
+   * exports are included.
+   *
+   * Note that type exports are also affected by this option.
+   */
+  include?: string[]
+  /**
+   * The exports to exclude from the package. If undefined, no exports
+   * are excluded.
+   *
+   * Note that type exports are also affected by this option.
+   */
+  exclude?: string[]
+  /**
+   * The exports to rename from the package. Any exports listed here
+   * are automatically added to the `include` array (if not already
+   * present).
+   */
+  rename?: Record<string, string>
 }
 
 export interface Config
