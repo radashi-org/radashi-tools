@@ -48,7 +48,9 @@ export async function createFunction(
   }
 
   const env = options.env ?? getEnv(options.dir)
-  await pullRadashi(env)
+  if (env.radashiDir) {
+    await pullRadashi(env)
+  }
 
   let { group, description } = options
 
@@ -133,8 +135,10 @@ export async function createFunction(
   }
 
   // Update mod.ts
-  const { default: build } = await import('./build')
-  await build({ env })
+  if (env.radashiDir) {
+    const { default: build } = await import('./build')
+    await build({ env })
+  }
 }
 
 async function createFile(file: string, content: string): Promise<void> {

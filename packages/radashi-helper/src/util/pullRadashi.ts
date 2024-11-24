@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import { memo } from 'radashi'
 import type { Env } from '../env'
 import { cloneRadashi, getRadashiCloneURL } from './cloneRadashi'
-import { forwardStderrAndRethrow } from './error'
+import { forwardStderrAndRethrow, RadashiError } from './error'
 import { prepareGitHubDefaultRepo } from './github'
 import { isExactCommit } from './isExactCommit'
 import { log } from './log'
@@ -11,6 +11,10 @@ import { stdio } from './stdio'
 
 export const pullRadashi = memo<[env: Env], Promise<void>>(
   async function pullRadashi(env) {
+    if (!env.radashiDir) {
+      throw new RadashiError('No upstream repository exists')
+    }
+
     const ref = await env.radashiRef
 
     if (existsSync(env.radashiDir)) {

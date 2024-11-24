@@ -6,6 +6,7 @@ import { flat, memo, reduce, select, traverse, unique } from 'radashi'
 import type { Env } from '../env'
 import { cwdRelative } from '../util/cwdRelative'
 import { debug } from '../util/debug'
+import { RadashiError } from '../util/error'
 import { getRadashiFuncPaths } from '../util/getRadashiFuncPaths'
 import { isBabelNode } from '../util/isBabelNode'
 import { loadRewired } from './loadRewired'
@@ -16,6 +17,10 @@ export async function rewireDependents(
   env: Env,
   radashiFuncPaths?: string[],
 ): Promise<string[]> {
+  if (!env.radashiDir) {
+    throw new RadashiError('No upstream repository exists')
+  }
+
   radashiFuncPaths ??= await getRadashiFuncPaths(env)
 
   const parseImports = memo((filename: string) => {

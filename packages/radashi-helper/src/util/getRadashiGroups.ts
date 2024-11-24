@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import type { Env } from '../env'
 
 export async function getRadashiGroups(env: Env) {
-  const upstreamDir = join(env.root, '.radashi/upstream/src')
+  const upstreamDir = join(env.radashiDir ?? env.root, 'src')
   const existingDirs = await readdir(upstreamDir, { withFileTypes: true })
   return existingDirs
     .filter(dirent => dirent.isDirectory())

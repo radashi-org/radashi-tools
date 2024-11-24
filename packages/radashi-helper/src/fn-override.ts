@@ -10,6 +10,7 @@ import { rewireDependents } from './rewired/rewireDependents'
 import { assertRepoClean } from './util/assertRepoClean'
 import { cwdRelative } from './util/cwdRelative'
 import { debug } from './util/debug'
+import { RadashiError } from './util/error'
 import { getRadashiFuncPaths } from './util/getRadashiFuncPaths'
 import { log } from './util/log'
 import { openInEditor } from './util/openInEditor'
@@ -33,6 +34,12 @@ export async function addOverride(
   options: AddOverrideOptions = {},
 ) {
   const env = options.env ?? getEnv(options.dir)
+
+  const { radashiDir } = env
+  if (!radashiDir) {
+    throw new RadashiError('No upstream repository exists')
+  }
+
   await assertRepoClean(env.root)
   await pullRadashi(env)
 
@@ -43,14 +50,14 @@ export async function addOverride(
     if (options.fromBranch) {
       // Checkout the specified branch.
       await exec('git', ['checkout', options.fromBranch], {
-        cwd: env.radashiDir,
+        cwd: radashiDir,
         stdio,
       })
 
       // Checkout the previous branch when copying is done.
       onFinish(async () => {
         await exec('git', ['checkout', '-'], {
-          cwd: env.radashiDir,
+          cwd: radashiDir,
         })
       })
     }
@@ -69,7 +76,7 @@ export async function addOverride(
 
     for (const folder of projectFolders) {
       const fromPath = join(
-        env.radashiDir,
+        radashiDir,
         folder.name,
         bestMatch + folder.extension,
       )

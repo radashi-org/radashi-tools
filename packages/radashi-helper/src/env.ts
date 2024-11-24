@@ -2,11 +2,11 @@ import escalade from 'escalade/sync'
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import LazyPromise from 'p-lazy'
-import { isString } from 'radashi'
+import { isString, tryit } from 'radashi'
 import type { PackageJson } from 'type-fest'
 import { getInstalledRadashiRef } from './util/cloneRadashi'
+import { debug } from './util/debug'
 import { RadashiError } from './util/error'
-import { log } from './util/log'
 
 // These config options don't have default values.
 interface OptionalConfig {
@@ -41,23 +41,29 @@ export interface Config
 export interface Env {
   pkg: PackageJson
   config: Config
-  configPath: string
+  configPath: string | null
   root: string
   modPath: string
   outDir: string
-  radashiDir: string
+  radashiDir: string | null
   overrideDir: string
   radashiRef: LazyPromise<string>
 }
 
 export function getEnv(root?: string | void): Env {
+  let configRequired = false
+
   root = root
     ? resolve(root)
-    : escalade(
-        process.cwd(),
-        (dir, files) =>
-          (dir.includes('radashi') || files.includes('radashi.json')) && dir,
-      )
+    : escalade(process.cwd(), (dir, files) => {
+        if (dir.includes('radashi')) {
+          return dir
+        }
+        if (files.includes('radashi.json')) {
+          configRequired = true
+          return dir
+        }
+      })
 
   if (!isString(root)) {
     throw new RadashiError('Could not find your Radashi root directory')
@@ -67,10 +73,9 @@ export function getEnv(root?: string | void): Env {
     readFileSync(join(root, 'package.json'), 'utf8'),
   ) as PackageJson
 
-  const radashiDir = join(root, '.radashi/upstream')
-  const overrideDir = join(root, 'overrides')
+  const originUrl = readOriginSync(root)
 
-  const [configPath, config] = getConfig(root)
+  const [configPath, config] = getConfig(root, configRequired)
 
   return {
     pkg,
@@ -79,26 +84,31 @@ export function getEnv(root?: string | void): Env {
     config,
     configPath,
     outDir: process.env.RADASHI_OUT_DIR || join(root, 'dist'),
-    radashiDir,
-    overrideDir,
+    radashiDir: !originUrl?.includes('github.com/radashi-org/radashi')
+      ? join(root, '.radashi/upstream')
+      : null,
+    overrideDir: join(root, 'overrides'),
     radashiRef: new LazyPromise((resolve, reject) => {
       getInstalledRadashiRef(pkg).then(resolve, reject)
     }),
   }
 }
 
-function getConfig(root: string) {
+function getConfig(root: string, configRequired: boolean) {
   const configPath = join(root, 'radashi.json')
 
-  let userConfig: UserConfig
+  let userConfig: UserConfig | undefined
   try {
     userConfig = JSON.parse(readFileSync(configPath, 'utf8')) as UserConfig
-  } catch (error) {
-    log.error('Error parsing radashi.json:', error)
-    userConfig = {} as UserConfig
+  } catch (error: any) {
+    if (configRequired) {
+      error.message = 'Error parsing radashi.json: ' + error.message
+      throw error
+    }
+    debug('Failed to read radashi.json, using defaults')
   }
 
-  let editor = userConfig.editor?.replace(
+  let editor = userConfig?.editor?.replace(
     /^\$EDITOR$/,
     process.env.EDITOR ?? '',
   )
@@ -106,7 +116,7 @@ function getConfig(root: string) {
     editor = ''
   }
 
-  const userFormats = userConfig.formats?.filter(
+  const userFormats = userConfig?.formats?.filter(
     value => value === 'esm' || value === 'cjs',
   )
 
@@ -117,5 +127,23 @@ function getConfig(root: string) {
     editor: editor || undefined,
   }
 
-  return [configPath, config] as const
+  return [userConfig ? configPath : null, config] as const
+}
+
+function readOriginSync(root: string) {
+  const [err, gitconfig] = tryit(() =>
+    readFileSync(join(root, '.git/config'), 'utf8'),
+  )()
+  if (err) {
+    return null
+  }
+
+  const originSectionIdx = gitconfig.indexOf('[remote "origin"]')
+  if (originSectionIdx === -1) {
+    return null
+  }
+
+  const urlRegex = /url = (.+)/g
+  urlRegex.lastIndex = originSectionIdx
+  return urlRegex.exec(gitconfig)?.[1] ?? null
 }

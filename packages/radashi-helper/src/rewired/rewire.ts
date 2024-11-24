@@ -3,8 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import type { Env } from '../env'
 import { debug } from '../util/debug'
+import { RadashiError } from '../util/error'
 
 export async function rewire(funcPath: string, env: Env) {
+  if (!env.radashiDir) {
+    throw new RadashiError('No upstream repository exists')
+  }
   const srcFile = join(env.radashiDir, 'src', funcPath + '.ts')
   const contents = readFileSync(srcFile, 'utf8')
   try {

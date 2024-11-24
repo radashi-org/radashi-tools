@@ -8,7 +8,7 @@ import type { Env } from '../env'
  * Radashi repository.
  */
 export async function getRadashiFuncPaths(env: Env) {
-  const srcRoot = join(env.radashiDir, 'src')
+  const srcRoot = join(env.radashiDir ?? env.root, 'src')
   return select(
     (await glob('**/*.ts', { cwd: srcRoot })).sort(),
     f => f.replace(/\.ts$/, ''),

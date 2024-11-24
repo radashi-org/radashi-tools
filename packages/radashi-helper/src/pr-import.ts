@@ -55,6 +55,9 @@ export async function importPullRequest(
   }
 
   const env = options.env ?? getEnv(options.dir)
+  if (!env.radashiDir) {
+    throw new RadashiError('No upstream repository exists')
+  }
 
   await assertRepoClean(env.root)
   await pullRadashi(env)

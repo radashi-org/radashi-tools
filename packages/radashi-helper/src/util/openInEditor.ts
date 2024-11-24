@@ -130,13 +130,15 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
       }
 
       forcedEditor = editor
-      await updateRadashiConfig(env, {
-        editor: response === 'custom' ? editor : response,
-      })
-      await botCommit('chore: set preferred editor in radashi.json', {
-        cwd: env.root,
-        add: [env.configPath],
-      })
+      if (env.configPath) {
+        await updateRadashiConfig(env, {
+          editor: response === 'custom' ? editor : response,
+        })
+        await botCommit('chore: set preferred editor in radashi.json', {
+          cwd: env.root,
+          add: [env.configPath],
+        })
+      }
 
       break
     }
