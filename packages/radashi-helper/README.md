@@ -97,6 +97,20 @@ pnpm radashi fn override number/sum
 
 &nbsp;
 
+### `radashi fn remove [name]`
+
+Remove the files for a custom function.
+
+```sh
+# Interactive mode
+pnpm radashi fn remove
+
+# Remove the files for "number/sum"
+pnpm radashi fn remove number/sum
+```
+
+&nbsp;
+
 ### `radashi pr import <pr-id>`
 
 Copy the files for a Radashi “pull request” into your project.

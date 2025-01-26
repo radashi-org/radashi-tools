@@ -83,6 +83,19 @@ app
         await addOverride(query ?? '', flags)
       })
 
+    fn.command('remove [funcPath]', 'Remove a function')
+      .alias('rm')
+      .alias('delete')
+      .alias('del')
+      .action(async (funcPath, flags) => {
+        const { removeFunction } = await import('./fn-remove')
+        await removeFunction({ ...flags, funcPath })
+
+        log.warn(
+          'This command has only removed the files. It didn‘t edit the codebase or commit the changes.',
+        )
+      })
+
     await execute(fn, app.rawArgs.slice(1))
   })
 
