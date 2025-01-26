@@ -184,4 +184,10 @@ export async function moveFunction(options: MoveFunctionOptions = {}) {
       await fs.rm(prevDir, { recursive: true })
     }
   }
+
+  // Update mod.ts
+  if (env.radashiDir) {
+    const { default: build } = await import('./build')
+    await build({ env })
+  }
 }
