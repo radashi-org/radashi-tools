@@ -28,9 +28,15 @@ app
 
     fn.command('create [name]', 'Scaffold the files for a custom function')
       .alias('add')
-      .option('-e, --editor', 'Open the new function in the specified editor')
-      .option('-d, --description', 'Set the description for the new function')
-      .option('-g, --group', 'Set the group for the new function')
+      .option(
+        '-e, --editor <name>',
+        'Open the new function in the specified editor',
+      )
+      .option(
+        '-d, --description <text>',
+        'Set the description for the new function',
+      )
+      .option('-g, --group <name>', 'Set the group for the new function')
       .action(async (name: string | undefined, flags) => {
         if (name?.includes('/')) {
           const parts = name.split('/')
