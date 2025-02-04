@@ -29,7 +29,7 @@ app
     fn.command('create [name]', 'Scaffold the files for a custom function')
       .alias('add')
       .option(
-        '-e, --editor <name>',
+        '-e, --editor [name]',
         'Open the new function in the specified editor',
       )
       .option(
