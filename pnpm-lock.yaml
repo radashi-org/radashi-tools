@@ -38,6 +38,9 @@ importers:
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
+      kleur:
+        specifier: ^4.1.5
+        version: 4.1.5
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -66,9 +69,6 @@ importers:
       glob-regex:
         specifier: ^0.3.2
         version: 0.3.2
-      kleur:
-        specifier: ^4.1.5
-        version: 4.1.5
       p-lazy:
         specifier: ^4.0.0
         version: 4.0.0
