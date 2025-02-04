@@ -1,8 +1,9 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path, { dirname, join } from 'node:path'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
+import { addExportToBarrel } from './util/addExportToBarrel'
 import { dedent } from './util/dedent'
 import { EarlyExitError, RadashiError } from './util/error'
 import { getRadashiGroups } from './util/getRadashiGroups'
@@ -138,6 +139,16 @@ export async function createFunction(
   if (env.radashiDir) {
     const { default: build } = await import('./build')
     await build({ env })
+  } else {
+    log('Updating src/mod.ts')
+    const barrelFile = join(env.root, 'src/mod.ts')
+    writeFile(
+      barrelFile,
+      addExportToBarrel(
+        readFileSync(barrelFile, 'utf8'),
+        `./${group}/${funcName}.ts`,
+      ),
+    )
   }
 }
 
