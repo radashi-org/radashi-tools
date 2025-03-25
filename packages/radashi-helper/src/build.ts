@@ -71,16 +71,15 @@ async function emitDeclarationTypes(
 ) {
   log('Emitting declaration types...')
   const result = exec(
-    'pnpm',
+    resolve(root, 'node_modules/.bin/tsc'),
     sift([
-      'tsc',
-      flags.watch && '--watch',
-      flags.watch && '--preserveWatchOutput',
-      '--emitDeclarationOnly',
-      '--outDir',
-      outDir,
       '--project',
       'tsconfig.dts.json',
+      '--outDir',
+      outDir,
+      '--emitDeclarationOnly',
+      flags.watch && '--watch',
+      flags.watch && '--preserveWatchOutput',
     ]),
     {
       cwd: root,
