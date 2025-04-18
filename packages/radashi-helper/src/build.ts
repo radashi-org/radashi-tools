@@ -1,9 +1,8 @@
 import * as chokidar from 'chokidar'
 import * as esbuild from 'esbuild'
-import { exec } from 'exec'
 import fs, { readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import { sift } from 'radashi'
+import $ from 'picospawn'
 import type { Promisable } from 'type-fest'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
@@ -70,17 +69,14 @@ async function emitDeclarationTypes(
   flags: { watch?: boolean } = {},
 ) {
   log('Emitting declaration types...')
-  const result = exec(
-    resolve(root, 'node_modules/.bin/tsc'),
-    sift([
-      '--project',
-      'tsconfig.dts.json',
-      '--outDir',
+  const result = $(
+    '%s --project tsconfig.dts.json --outDir %s --emitDeclarationOnly',
+    [
+      resolve(root, 'node_modules/.bin/tsc'),
       outDir,
-      '--emitDeclarationOnly',
       flags.watch && '--watch',
       flags.watch && '--preserveWatchOutput',
-    ]),
+    ],
     {
       cwd: root,
       stdio,

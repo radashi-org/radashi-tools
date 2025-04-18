@@ -1,9 +1,9 @@
-import { exec } from 'exec'
 import globRegex from 'glob-regex'
 import { yellow } from 'kleur/colors'
 import { existsSync } from 'node:fs'
 import { copyFile, mkdir } from 'node:fs/promises'
 import { basename, dirname, extname, join, relative } from 'node:path'
+import $ from 'picospawn'
 import { botCommit } from './bot'
 import type { CommonOptions } from './cli/options'
 import { type Env, getEnv } from './env'
@@ -63,7 +63,7 @@ export async function importPullRequest(
   await pullRadashi(env)
 
   // Delete previous PR branch.
-  await exec('git', ['branch', '-D', 'pr-' + prNumber], {
+  await $('git branch -D', ['pr-' + prNumber], {
     cwd: env.radashiDir,
     reject: false,
   })
@@ -71,7 +71,7 @@ export async function importPullRequest(
   log('Checking out PR...')
 
   // Checkout the PR.
-  await exec('gh', ['pr', 'checkout', prNumber, '-b', 'pr-' + prNumber], {
+  await $('gh pr checkout %s -b %s', [prNumber, 'pr-' + prNumber], {
     cwd: env.radashiDir,
   }).catch(error => {
     log.error(error.stderr)
@@ -94,22 +94,22 @@ export async function importPullRequest(
   debug('Target branch of the PR:', targetBranch)
 
   // Ensure the target branch exists locally and is up-to-date.
-  await exec(
-    'git',
-    ['fetch'].concat(
-      targetBranch.includes('/')
-        ? targetBranch.split('/')
-        : ['origin', targetBranch],
-    ),
+  await $(
+    'git fetch',
+    targetBranch.includes('/')
+      ? targetBranch.split('/')
+      : ['origin', targetBranch],
     {
       cwd: env.radashiDir,
     },
   ).catch(forwardStderrAndRethrow)
 
   // Get the base commit of the PR
-  const baseCommit = await exec('git', ['merge-base', 'HEAD', targetBranch], {
-    cwd: env.radashiDir,
-  }).then(r => r.stdout)
+  const baseCommit = (
+    await $('git merge-base HEAD', [targetBranch], {
+      cwd: env.radashiDir,
+    })
+  ).stdout
 
   debug('Base commit of the PR:', baseCommit)
 
@@ -196,11 +196,9 @@ export async function importPullRequest(
     )
   }
 
-  let prTitle = await exec(
-    'gh',
-    ['pr', 'view', '--json', 'title', '--jq', '.title'],
-    { cwd: env.radashiDir },
-  ).then(result => result.stdout.trim())
+  let prTitle = await $('gh pr view --json title --jq .title', {
+    cwd: env.radashiDir,
+  }).then(result => result.stdout.trim())
 
   const validTitleRE =
     /^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^):]+\))?: /
@@ -260,9 +258,9 @@ async function tryCopyFile(src: string, dst: string) {
 }
 
 async function parseGitDiff(ref: string, opts: { cwd: string }) {
-  const { stdout: nameStatus } = await exec(
-    'git',
-    ['diff', ref, '--name-status'],
+  const { stdout: nameStatus } = await $(
+    'git diff %s --name-status',
+    [ref],
     opts,
   )
   return nameStatus
@@ -278,9 +276,11 @@ async function parseGitDiff(ref: string, opts: { cwd: string }) {
  * Get the remote branch being targeted by the currently checked-out pull request.
  */
 async function getTargetBranch(env: Env) {
-  const { stdout } = await exec(
-    'gh',
-    ['pr', 'view', '--json', 'baseRefName', '--jq', '.baseRefName'],
+  if (!env.radashiDir) {
+    throw new RadashiError('No upstream repository exists')
+  }
+  const { stdout } = await $(
+    'gh pr view --json baseRefName --jq .baseRefName',
     { cwd: env.radashiDir },
   )
   const targetBranch = stdout?.trim() ?? 'main'

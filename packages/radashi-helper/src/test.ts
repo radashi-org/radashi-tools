@@ -1,5 +1,5 @@
-import { exec } from 'exec'
 import glob from 'fast-glob'
+import $ from 'picospawn'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
 import { debug } from './util/debug'
@@ -43,7 +43,7 @@ export async function startTestRunner(
 
   debug('Running:', ['pnpm', ...args])
 
-  await exec('pnpm', args, {
+  await $('pnpm', args, {
     cwd: env.root,
     stdio,
   })

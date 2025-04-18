@@ -1,7 +1,7 @@
-import { exec } from 'exec'
 import glob from 'fast-glob'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
+import $ from 'picospawn'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
 import { RadashiError } from './util/error'
@@ -20,7 +20,7 @@ export async function lint(files: string[], options: CommonOptions) {
       const biomeGlobs = ['./src', './tests', './benchmarks'].flatMap(
         rootGlob => [rootGlob, rootGlob.replace('./', './overrides/')],
       )
-      await exec('pnpm', ['biome', 'check', ...biomeGlobs], {
+      await $('pnpm biome check', biomeGlobs, {
         cwd: env.root,
         stdio,
       }).catch(error => {
@@ -31,7 +31,7 @@ export async function lint(files: string[], options: CommonOptions) {
       binFile === 'eslint' &&
       (await glob('eslint.config.*', { cwd: env.root })).length > 0
     ) {
-      await exec('pnpm', ['eslint', ...files], {
+      await $('pnpm eslint', files, {
         cwd: env.root,
         stdio,
       }).catch(error => {

@@ -1,9 +1,9 @@
-import { exec } from 'exec'
+import $ from 'picospawn'
 import { debug } from './debug'
 
 export async function isFileDirty(filePath: string): Promise<boolean> {
   try {
-    const { stdout } = await exec('git', ['status', '--porcelain', filePath])
+    const { stdout } = await $('git status --porcelain', [filePath])
     return stdout.trim().length > 0
   } catch (error) {
     debug(`Error checking file status: ${error}`)

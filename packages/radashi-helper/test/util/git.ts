@@ -1,14 +1,14 @@
-import { exec, type Result } from 'exec'
+import $, { type PicospawnResult } from 'picospawn'
 
 export type GitDiffMode = 'all-staged' | 'last-commit'
 
 export async function gitDiff(mode: GitDiffMode) {
-  let diff: Result
+  let diff: PicospawnResult
   if (mode === 'all-staged') {
-    await exec('git', ['add', '-A'])
-    diff = await exec('git', ['diff', '--staged'])
+    await $('git', ['add', '-A'])
+    diff = await $('git diff --staged')
   } else if (mode === 'last-commit') {
-    diff = await exec('git', ['diff', 'HEAD^'])
+    diff = await $('git diff HEAD^')
   } else {
     throw new Error(`Unknown git diff mode: ${mode}`)
   }
@@ -16,16 +16,11 @@ export async function gitDiff(mode: GitDiffMode) {
 }
 
 export async function gitCurrentBranch(cwd = process.cwd()) {
-  const { stdout: currentBranch } = await exec(
-    'git',
-    ['rev-parse', '--abbrev-ref', 'HEAD'],
-    { cwd },
-  )
-  return currentBranch
+  return (await $('git rev-parse --abbrev-ref HEAD', { cwd })).stdout
 }
 
 export async function gitBranchExists(branch: string, cwd = process.cwd()) {
-  const { exitCode } = await exec('git', ['rev-parse', '--verify', branch], {
+  const { exitCode } = await $('git rev-parse --verify', [branch], {
     cwd,
     reject: false,
   })
@@ -43,9 +38,9 @@ export async function gitHardReset(ref: string, cwd = process.cwd()) {
   }
 
   // Reset the files.
-  await exec('git', ['checkout', ref, '-f'], { cwd })
-  await exec('git', ['reset', '--hard', ref], { cwd })
-  await exec('git', ['clean', '-df'], { cwd })
+  await $('git checkout %s -f', [ref], { cwd })
+  await $('git reset --hard', [ref], { cwd })
+  await $('git clean -df', { cwd })
 }
 
 /**
@@ -58,10 +53,10 @@ export async function gitClobberBranch(cwd = process.cwd()) {
     )
   }
 
-  await exec('git', ['checkout', '--orphan', 'tmp'], { cwd })
-  await exec('git', ['commit', '-m', 'Initial commit'], { cwd })
-  await exec('git', ['branch', '-D', 'test'], { cwd })
-  await exec('git', ['branch', '-m', 'test'], { cwd })
+  await $('git checkout --orphan tmp', { cwd })
+  await $('git commit -m', ['Initial commit'], { cwd })
+  await $('git branch -D test', { cwd })
+  await $('git branch -m test', { cwd })
 }
 
 export async function getGitCommitSHAs({
@@ -71,10 +66,11 @@ export async function getGitCommitSHAs({
   short?: boolean
   cwd?: string
 } = {}) {
-  const { stdout } = await exec('git', ['log', '--pretty=format:%H'], {
-    cwd,
-  })
-  return short
-    ? stdout.split('\n').map(sha => sha.slice(0, 7))
-    : stdout.split('\n')
+  const lines = (await $('git log --pretty=format:%H', { cwd })).stdout.split(
+    '\n',
+  )
+  if (short) {
+    return lines.map(sha => sha.slice(0, 7))
+  }
+  return lines
 }

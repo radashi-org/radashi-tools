@@ -1,7 +1,7 @@
-import { exec } from 'exec'
 import { existsSync } from 'node:fs'
 import { copyFile, mkdir } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
+import $ from 'picospawn'
 import { defer } from 'radashi'
 import { botCommit } from './bot'
 import type { CommonOptions } from './cli/options'
@@ -49,14 +49,14 @@ export async function addOverride(
   await defer(async onFinish => {
     if (options.fromBranch) {
       // Checkout the specified branch.
-      await exec('git', ['checkout', options.fromBranch], {
+      await $('git checkout', [options.fromBranch], {
         cwd: radashiDir,
         stdio,
       })
 
       // Checkout the previous branch when copying is done.
       onFinish(async () => {
-        await exec('git', ['checkout', '-'], {
+        await $('git checkout -', {
           cwd: radashiDir,
         })
       })

@@ -1,4 +1,4 @@
-import { exec } from 'exec'
+import $ from 'picospawn'
 import { forwardStderrAndRethrow } from './util/error'
 import { stdio } from './util/stdio'
 
@@ -12,13 +12,13 @@ export async function botCommit(
   opts: { cwd: string; add: string[] },
 ): Promise<void> {
   if (opts.add.length > 0) {
-    await exec('git', ['add', ...opts.add], { cwd: opts.cwd }).catch(
+    await $('git add', opts.add, { cwd: opts.cwd }).catch(
       forwardStderrAndRethrow,
     )
   }
-  await exec(
-    'git',
-    ['commit', '-m', message, '--author', `${bot.name} <${bot.email}>`],
+  await $(
+    'git commit -m %s --author %s',
+    [message, `${bot.name} <${bot.email}>`],
     { cwd: opts.cwd, stdio },
   )
 }

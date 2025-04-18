@@ -1,5 +1,5 @@
 import cac, { type CAC } from 'cac'
-import { exec } from 'exec'
+import $ from 'picospawn'
 import { dedent } from './util/dedent'
 import { log } from './util/log'
 
@@ -201,7 +201,7 @@ app.command('help', 'Walk through a tutorial').action(async () => {
 export function run(argv: string[]) {
   return execute(app, argv, sections => {
     if (argv[0] === 'test') {
-      exec('pnpm', ['-s', 'vitest', '--help'], { stdio: 'inherit' })
+      $('pnpm -s vitest --help', { stdio: 'inherit' })
       return []
     }
     return sections

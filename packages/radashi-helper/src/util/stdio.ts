@@ -1,7 +1,7 @@
-import type { StdioOption } from 'exec'
+import type { PicospawnOptions } from 'picospawn'
 
-export let stdio: StdioOption = 'ignore'
+export let stdio: PicospawnOptions['stdio'] = 'ignore'
 
-export function setStdio(arg: StdioOption) {
+export function setStdio(arg: PicospawnOptions['stdio']) {
   stdio = arg
 }

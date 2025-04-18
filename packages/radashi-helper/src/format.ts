@@ -1,5 +1,5 @@
-import { exec } from 'exec'
 import glob from 'fast-glob'
+import $ from 'picospawn'
 import type { CommonOptions } from './cli/options'
 import { getEnv } from './env'
 import { stdio } from './util/stdio'
@@ -8,9 +8,8 @@ export async function format(filter: string[], options: CommonOptions) {
   const env = options.env ?? getEnv(options.dir)
 
   // 1. Remember if the user has uncommitted changes (ignoring untracked files).
-  const { stdout: uncommittedChanges } = await exec(
-    'git',
-    ['status', '--porcelain', '-uno'],
+  const { stdout: uncommittedChanges } = await $(
+    'git status --porcelain -uno',
     { cwd: env.root },
   )
 
@@ -38,36 +37,29 @@ export async function format(filter: string[], options: CommonOptions) {
 
   // 2. Update the formatting.
   if (biomeFiles.length > 0) {
-    await exec(
-      'pnpm',
-      [
-        'biome',
-        'check',
-        '--diagnostic-level',
-        'info',
-        '--fix',
-        '--unsafe',
-        ...biomeFiles,
-      ],
-      { cwd: env.root, stdio },
+    await $(
+      'pnpm biome check --diagnostic-level info --fix --unsafe',
+      biomeFiles,
+      {
+        cwd: env.root,
+        stdio,
+      },
     )
   }
 
   if (prettierFiles.length > 0) {
-    await exec('pnpm', ['prettier', '--write', ...prettierFiles], {
+    await $('pnpm prettier --write', prettierFiles, {
       cwd: env.root,
       stdio,
     })
   }
 
   // 3. Commit if there were no uncommitted changes, but there are now.
-  const { stdout: currentChanges } = await exec(
-    'git',
-    ['status', '--porcelain', '-uno'],
-    { cwd: env.root },
-  )
+  const currentChanges = (
+    await $('git status --porcelain -uno', { cwd: env.root })
+  ).stdout
   if (!uncommittedChanges && currentChanges) {
-    await exec('git', ['add', '-u'], { cwd: env.root })
-    await exec('git', ['commit', '-m', 'chore: format'], { cwd: env.root })
+    await $('git add -u', { cwd: env.root })
+    await $('git commit -m', ['chore: format'], { cwd: env.root })
   }
 }

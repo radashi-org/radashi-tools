@@ -1,5 +1,5 @@
-import { exec } from 'exec'
 import { existsSync } from 'node:fs'
+import $ from 'picospawn'
 import { memo } from 'radashi'
 import type { Env } from '../env'
 import { cloneRadashi, getRadashiCloneURL } from './cloneRadashi'
@@ -28,24 +28,22 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
         // Ensure the remote URL is set to the correct clone URL. For
         // exact alpha/beta versions, the tags are stored in another
         // repository.
-        await exec(
-          'git',
-          ['remote', 'set-url', 'origin', getRadashiCloneURL(ref)],
-          { cwd: env.radashiDir },
-        ).catch(forwardStderrAndRethrow)
+        await $('git remote set-url origin', [getRadashiCloneURL(ref)], {
+          cwd: env.radashiDir,
+        }).catch(forwardStderrAndRethrow)
 
         // In case the ref was not found, fetch the latest changes.
-        await exec('git', ['fetch', 'origin', ref], {
+        await $('git fetch origin', [ref], {
           cwd: env.radashiDir,
           stdio,
         })
 
-        await exec('git', ['checkout', ref], {
+        await $('git checkout', [ref], {
           cwd: env.radashiDir,
         }).catch(forwardStderrAndRethrow)
       } else {
         // Switch to the branch if it's not already checked out.
-        await exec('git', ['checkout', ref], {
+        await $('git checkout', [ref], {
           cwd: env.radashiDir,
           reject: false,
         })
@@ -53,7 +51,7 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
         log('Updating radashi. Please wait...')
 
         try {
-          await exec('git', ['pull', 'origin', ref], {
+          await $('git pull origin', [ref], {
             cwd: env.radashiDir,
             stdio,
           })
@@ -81,17 +79,8 @@ export const pullRadashi = memo<[env: Env], Promise<void>>(
  */
 async function isRepoInSync(ref: string, opts: { cwd: string }) {
   try {
-    const { stdout: refCommit } = await exec(
-      'git',
-      ['rev-parse', '--verify', ref],
-      opts,
-    )
-
-    const { stdout: headCommit } = await exec(
-      'git',
-      ['rev-parse', 'HEAD'],
-      opts,
-    )
+    const refCommit = (await $('git rev-parse --verify', [ref], opts)).stdout
+    const headCommit = (await $('git rev-parse HEAD', opts)).stdout
 
     return refCommit === headCommit
   } catch (error) {

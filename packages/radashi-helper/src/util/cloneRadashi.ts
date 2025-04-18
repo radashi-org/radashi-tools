@@ -1,4 +1,4 @@
-import { exec, type ExecOptions } from 'exec'
+import $, { type PicospawnOptions } from 'picospawn'
 import type { PackageJson } from 'type-fest'
 import { forwardStderrAndRethrow, RadashiError } from './error'
 import { prepareGitHubDefaultRepo } from './github'
@@ -14,7 +14,7 @@ export async function getInstalledRadashiRef(pkg: PackageJson) {
   if (ref === 'beta') {
     ref = 'main'
   } else if (ref !== 'next') {
-    ref = await exec('npm', ['view', 'radashi@' + ref, '--json']).then(
+    ref = await $('npm view %s --json', ['radashi@' + ref]).then(
       ({ stdout }) => 'v' + JSON.parse(stdout).version,
     )
   }
@@ -39,12 +39,12 @@ export function getRadashiCloneURL(ref: string) {
 export async function cloneRadashi(
   ref: string,
   dir: string,
-  opts: ExecOptions = {},
+  opts: PicospawnOptions = {},
 ) {
   const cloneUrl = getRadashiCloneURL(ref)
-  await exec(
-    'git',
-    ['clone', cloneUrl, '--branch', ref, '--single-branch', dir],
+  await $(
+    'git clone %s --branch %s --single-branch %s',
+    [cloneUrl, ref, dir],
     opts,
   ).catch(error => {
     if (opts.stdio == null) {

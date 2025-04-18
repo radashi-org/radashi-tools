@@ -1,4 +1,4 @@
-import { exec } from 'exec'
+import $ from 'picospawn'
 import { proxied } from 'radashi'
 import { botCommit } from '../bot'
 import type { Env } from '../env'
@@ -59,7 +59,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
         'atom',
       ]) {
         try {
-          await exec('command', ['-v', editor])
+          await $('command -v', [editor])
           choices.push({
             title: `Open with ${displayNames[editor]}`,
             value: editor,
@@ -145,7 +145,7 @@ export async function openInEditor(file: string, env: Env, editor?: string) {
   }
 
   if (editor) {
-    await exec(editor, [file], { stdio }).catch(forwardStderrAndRethrow)
+    await $(editor, [file], { stdio }).catch(forwardStderrAndRethrow)
   }
 }
 
